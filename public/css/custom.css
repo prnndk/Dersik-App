@@ -1,0 +1,33 @@
+.front-link{
+    display: flex;
+}
+.front-link .list{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03);
+    background-color: #fff;
+    border-radius: 10px;
+    border: none;
+    position: relative;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    padding: 30px;
+    text-align: center;
+    flex-grow: 1;
+    flex-basis: 0;
+    margin: 0 10px;
+    text-decoration: none; }
+.front-link .list.list-active{
+    box-shadow: 0 2px 6px #acb5f6;
+    background-color: #6777ef;
+    color: #fff; 
+}
+.front-link .list.list-active:before {
+    background-color: #6777ef;
+    color: #fff; }
+.front-link .list .list-icon .fas, .front-link .list .list-icon .far, .front-link .list .list-icon .fab, .front-link .list .list-icon .fal, .front-link .list .list-icon .ion {
+    font-size: 34px;
+    margin-bottom: 15px; }
+.front-link .list .list-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700; }
