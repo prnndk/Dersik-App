@@ -6,6 +6,7 @@ use App\Models\Angkatan;
 use App\Models\vote;
 use App\Http\Requests\StorevoteRequest;
 use App\Http\Requests\UpdatevoteRequest;
+use App\Models\pemilih;
 
 class VoteController extends Controller
 {
@@ -99,6 +100,10 @@ class VoteController extends Controller
      */
     public function destroy(vote $voting)
     {
+        $voters=pemilih::where('vote_id',$voting->id)->get();
+        foreach ($voters as $vtr) {
+            pemilih::destroy($voters->id);
+        }
         vote::destroy($voting->id);
         return redirect(route('voting.index'))->with('success','Data '.$voting->nama.' Berhasil Dihapus');
     }
