@@ -8,11 +8,16 @@
     </div>
     <div class="card">
         <div class="card-body">
+            @if (session()->has('error'))
+                
+            @endif
             <div class="card-header"><h4>Table List of User</h4>
                 <div class="card-header-action">
+                    <a href="{{ route('exportuser') }}" class="btn btn-success">Export Data</a>
+                    <button class="btn btn-info" id="import">Import Data</button>
                 </div>
             </div>
-            <table class="table" id="table">
+            <table class="table table-responsive-sm" id="table">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -46,4 +51,37 @@
             </table>
         </div>
     </div>
+@endsection
+@section('bawahsection')
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Import user from Excel</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form action="{{ route('import.user') }}" role="form" method="post" enctype="multipart/form-data">
+            @csrf
+            <div class="form-group">
+                <input type="file" name="file" id="file" accept=".xlsx, .xls, .csv">
+            </div>
+        </div>
+        <div class="modal-footer bg-whitesmoke br">
+            <button type="submit" class="btn btn-primary">Tambahkan Data</button>
+        </div>
+            </form>
+        </div>
+        </div>
+    </div>
+@endsection
+@section('customjs')
+<script>
+    $('#import').click(function (e) { 
+        e.preventDefault();
+        $('#modal').modal('show')
+    });
+</script>
 @endsection

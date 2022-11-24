@@ -66,4 +66,8 @@ class Regency extends Model
     {
         return $this->hasMany(korwil::class);
     }
+    public function siswa()
+    {
+        return $this->hasMany(siswa::class);
+    }
 }

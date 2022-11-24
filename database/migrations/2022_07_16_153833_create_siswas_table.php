@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('siswas', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
+            $table->string('email');
             $table->foreignId('kelas');
             $table->integer('status');
             $table->string('instansi')->length(120);
@@ -25,6 +26,8 @@ return new class extends Migration
             $table->foreignId('angkatan_id');
             $table->string('teman_smasa')->length(100);
             $table->bigInteger('nomor')->length(15);
+            $table->integer('review')->default(0)->length(1);
+            $table->string('message');
             $table->timestamps();
         });
     }

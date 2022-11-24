@@ -32,7 +32,7 @@
 </head>
 <body>
 <div id="app">
-    <div class="main-wrapper">
+      <div class="main-wrapper">
         @include('dashboard.layouts.top')
         @include('dashboard.layouts.side')
         @include('sweetalert::alert')

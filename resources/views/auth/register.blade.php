@@ -1,7 +1,7 @@
 <x-guest-layout>
     <x-jet-authentication-card>
         <x-slot name="logo">
-            Dersik SMASA 22
+            Register account for Dersik SMASA 22
         </x-slot>
 
         <x-jet-validation-errors class="mb-4" />

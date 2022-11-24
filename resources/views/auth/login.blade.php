@@ -1,7 +1,7 @@
 <x-guest-layout>
     <x-jet-authentication-card>
         <x-slot name="logo">
-            Dersik SMASA 22
+           <h1>Login to Dersik SMASA 22 Account</h1>
         </x-slot>
 
         <x-jet-validation-errors class="mb-4" />
@@ -38,7 +38,6 @@
                         {{ __('Forgot your password?') }}
                     </a>
                 @endif
-
                 <x-jet-button class="ml-4">
                     {{ __('Log in') }}
                 </x-jet-button>

@@ -7,8 +7,8 @@
             @foreach ($email as $show )
     <div class="row">
         <div class="col-md-6">
+            <div class="card-header"><h4>Data Permohonan Email</h4></div>
             <ul class="list-group mb-2">
-                <div class="card-header"><h4>Data Permohonan Email</h4></div>
                 <li class="list-group-item">Nama Pemohon: {{ $show->nama }}</li>
                 <li class="list-group-item">Username: {{ $show->username }}</li>
                 <li class="list-group-item">Requested Mail: {{ $show->email .'@'. $show->domain->name }}</li>

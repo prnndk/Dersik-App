@@ -5,8 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\kelas;
 use App\Models\Regency;
+use App\Exports\UserExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers;
+use App\Imports\UserImport;
+use Illuminate\Support\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class dashboardUserController extends Controller
 {
@@ -138,5 +143,14 @@ class dashboardUserController extends Controller
         $user=User::where('id',$id)->get();
         User::destroy($user);
         return redirect (route('userlist.index'))->with('success','Data has been deleted');
+    }
+    public function exportuser()
+    {
+        return Excel::download(new UserExport,'UserData.xlsx');
+    }
+    public function importuser(Request $request)
+    {
+        Excel::import(new UserImport,$request->file('file')->store('temp'));
+        return redirect(route('userlist.index'))->with('success','Berhasil Import Data!');
     }
 }

@@ -4,6 +4,19 @@
 <div class="section-header">
     <h1>Dashboard</h1>
 </div>
+
+<div class="col-12 mb-4">
+  <div class="hero text-{{ $text }} hero-bg-image" data-background="{{ asset('storage/app-image/'.$gambar) }}">
+    <div class="hero-inner">
+      <i class="bi {{ $icon }} fs-2"></i>
+      <h2>{{ $greet }}, {{ auth()->user()->username }}</h2>
+      <p class="lead">Selamat datang di aplikasi DERSIK 22</p>
+      <div class="mt-4">
+        <a href="/user/profile" class="text-{{ $text }} fs-5 text-decoration-none">Manage my account <i class="fas fa-arrow-right fs-5"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
 @if (Auth::user()->role=='admin')
 <div class="row">
     <div class="col-lg-3 col-md-6 col-sm-6 col-12">
@@ -157,7 +170,21 @@
         </div>
       </div>
     </div>
-    <div class="col-12 col-sm-12 col-lg-6 mt04">
+    <div class="col-12 col-sm-12 col-lg-6 mt-04">
+      <div class="card card-hero">
+        <div class="card-header">
+          <div class="card-icon"><i class="far fa-calendar-days"></i></div>
+          <h4>Agenda Terkini</h4>
+          <div class="card-description">
+            Agenda terdekat yang akan dilaksanakan
+          </div>
+        </div>
+        <div class="card-body">
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-12 col-lg-6">
       <div class="card">
         <div class="card-header">
           <h4>Quick Link</h4>

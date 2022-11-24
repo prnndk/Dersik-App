@@ -25,4 +25,8 @@ class kelas extends Model
     {
         return $this->belongsTo(Angkatan::class, 'id_angkatan');
     }
+    public function siswa()
+    {
+        return $this->hasMany(siswa::class);
+    }
 }

@@ -136,7 +136,7 @@ class KetuaController extends Controller
             if($request->oldImg){
                 Storage::delete($request->oldImg);
             }
-            $valrule['img']=$request->file('img')->store('app-image');
+            $ketuarule['img']=$request->file('img')->store('app-image');
         }
         $valketua=$request->validate($ketuarule);
         $valdata=$request->validate($datarule);

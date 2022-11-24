@@ -22,6 +22,7 @@ use App\Http\Controllers\TempatstatusController;
 use App\Http\Controllers\dashboardUserController;
 use App\Http\Controllers\KateginfoController;
 use App\Models\pemilih;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,33 +43,56 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified'
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard',[
-            'info'=>informasi::latest()->first(),
-            'siswa'=>siswa::count(),
-            'voter'=>pemilih::count()
-        ]);
-    })->name('dashboard');
+Route::get('/dashboard', [DashboardController::class,'dashboard'])->name('dashboard');
+Route::resource('/dashboard/korwil',\App\Http\Controllers\KorwilController::class)->middleware('admin');
+Route::resource('voting',\App\Http\Controllers\VoteController::class)->middleware('admin');
+Route::controller(KateginfoController::class)->group(function(){
+    Route::get('/info/kategori','create')->name('makeKateginfo')->middleware('admin');
+    Route::put('/info/kategori/{kateginfos:id}','edit')->name('kategInfo.edit')->middleware('admin');
+    Route::post('/info/kategstore','store')->name('kategInfoStore')->middleware('admin');
+    Route::delete('/info/kateg/delete/{kateinfos:id}','destroy')->name('kateg.destroy')->middleware('admin');
+});
+Route::resource('/userlist', dashboardUserController::class)->middleware('admin');
+Route::resource('/pemilih',PemilihController::class)->middleware('admin');
+Route::get('/dashboard/scan', [RegisPromController::class, 'scan'] )->middleware('admin');
+Route::post('/dashboard/verifQR', [RegisPromController::class, 'verifikasi'] )->middleware('admin')->name('verifikasiQR');
+Route::resource('/userdata', UserdataQRController::class)->middleware('admin');
+Route::resource('/dashboard/domain',DomainlistController::class)->middleware('admin');
+Route::resource('/dashboard/dataketua',DataketuaController::class)->middleware('admin');
+Route::get('export/user',[dashboardUserController::class,'exportuser'])->middleware('admin')->name('exportuser');
+Route::post('import/user',[dashboardUserController::class,'importuser'])->middleware('admin')->name('import.user');
+Route::get('cache_clear', function () {
+    Artisan::call('cache:clear');
+    return redirect('/dashboard')->with('success', 'Cache berhasil dihapus');
+});
+Route::get('config_clear', function () {
+    Artisan::call('config:clear');
+    return redirect('/dashboard')->with('success', 'Config berhasil dihapus');
+});
+Route::get('route_clear', function () {
+    Artisan::call('route:clear');
+    return redirect('/dashboard')->with('success', 'Route berhasil dihapus');
+});
+Route::get('link_storage', function () {
+    Artisan::call('storage:link');
+    return redirect('/dashboard')->with('success', 'Link storage berhasil dibuat');
+});
 });
 Route::resource('/dashboard/formprom', RegisPromController::class)->middleware('auth');
 Route::resource('/informasi', InformasiController::class)->middleware('auth');
 Route::resource('/pendataan', SiswaController::class)->middleware('auth');
 Route::resource('/dashboard/kelas', KelasController::class)->middleware('auth');
-Route::resource('/userlist', dashboardUserController::class)->middleware('admin');
 Route::get('/dashboard/informasipembayaran', [RegisPromController::class, 'infobayar'] )->middleware('auth');
 Route::get('/dashboard/undangan', [RegisPromController::class, 'undangan'] )->middleware('auth');
-Route::get('/dashboard/scan', [RegisPromController::class, 'scan'] )->middleware('admin');
-Route::post('/dashboard/verifQR', [RegisPromController::class, 'verifikasi'] )->middleware('admin')->name('verifikasiQR');
-Route::resource('/userdata', UserdataQRController::class)->middleware('admin');
+
 Route::resource('/dashboard/regis-mail',RegisEmailController::class)->middleware('auth');
 Route::resource('/dashboard/ketua',KetuaController::class)->middleware('auth');
 Route::resource('/dashboard/angkatan',AngkatanController::class)->middleware('auth');
-Route::resource('/dashboard/domain',DomainlistController::class)->middleware('admin');
-Route::resource('/dashboard/dataketua',DataketuaController::class)->middleware('admin');
+
 Route::resource('/data/status',StatusController::class)->middleware('auth');
 Route::resource('/data/instansi',DetailstatusController::class)->middleware('auth');
 Route::resource('/data/detail-status',TempatstatusController::class)->middleware('auth');
-Route::resource('/pemilih',PemilihController::class)->middleware('admin');
+
 Route::controller(PemilihController::class)->group(function(){
     Route::get('/vote','homevote')->name('vote')->middleware('auth');
     Route::get('/vote/me','usertoken')->name('usertoken')->middleware('auth');
@@ -84,12 +108,6 @@ Route::controller(PemilihController::class)->group(function(){
 Route::controller(SiswaController::class)->group(function(){
     Route::post('/api/dtlstts','cekDetail')->name('cekDetail')->middleware('auth');
 });
-Route::resource('/dashboard/korwil',\App\Http\Controllers\KorwilController::class)->middleware('admin');
-Route::resource('voting',\App\Http\Controllers\VoteController::class)->middleware('admin');
-Route::controller(KateginfoController::class)->group(function(){
-    Route::get('/info/kategori','create')->name('makeKateginfo')->middleware('admin');
-    Route::put('/info/kategori/{kateginfos:id}','edit')->name('kategInfo.edit')->middleware('admin');
-    Route::post('/info/kategstore','store')->name('kategInfoStore')->middleware('admin');
-    Route::delete('/info/kateg/delete/{kateinfos:id}','destroy')->name('kateg.destroy')->middleware('admin');
-});
+Route::get('publicform/pendataan', [SiswaController::class, 'publicform'] )->name('publicform');
+    
 

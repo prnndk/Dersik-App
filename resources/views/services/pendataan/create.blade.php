@@ -1,22 +1,29 @@
 @extends('dashboard.layouts.main')
 @section('webtitle','Form Pendataan')
 @section('container')
-    @if(auth()->user()->role=='admin')
     <div class="card">
             <div class="card-header">
+                <a href="{{ route('pendataan.index') }}" class="btn btn-icon-sm "><i class="fas fa-arrow-left"></i></a>
                 <h4>Form Pendataan</h4>
-                <div class="card-header-action">
-                    <a href="{{ route('pendataan.index') }}" class="badge badge-primary text-decoration-none"><i class="fas fa-arrow-left"></i> Back To Index</a>
-                </div>
             </div>
         <div class="card-body">
             <form action="{{ route('pendataan.store') }}" role="form" method="post" autocomplete="off">
                 @csrf
             <div class="row">
                 <div class="form-group col-md-6">
-                <label for="nama">Nama Lengkap</label>
-                <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"  required autofocus value="{{ old('nama') }}">
+                <label for="nama">Nama Lengkap <span class="text-danger">*</span></label>
+                <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"  required autofocus value="{{ old('nama',auth()->user()->name) }}">
                 @error('nama')
+                <div class="invalid-feedback">
+                {{ $message }}
+                </div>
+                @enderror
+                </div>
+                {{-- input email --}}
+                <div class="form-group col-md-6">
+                    <label for="email">Email <span class="text-danger">*</span></label>
+                    <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" required value="{{ auth()->user()->email,old('email') }}">
+                @error('email')
                 <div class="invalid-feedback">
                 {{ $message }}
                 </div>
@@ -24,21 +31,21 @@
                 </div>
                 {{-- select kelas --}}
             <div class="form-group col-md-6">
-                <label for='kelas'>Kelas</label>
+                <label for='kelas'>Kelas <span class="text-danger">*</span></label>
                 <select class="form-control select2" name='kelas'>
-                    <option value="" disabled selected>-PILIH KELAS-</option>
+                    <option value="" disabled selected>-Pilih Kelas-</option>
                     @foreach ($kelas as $list)
                         @if (old('kelas')==$list->id)
                         <option value="{{ $list->id }}" selected>{{ $list->kelas }}</option>
                         @else
                         <option value="{{ $list->id }}">{{ $list->kelas }}</option>
                         @endif
-                        @endforeach
+                    @endforeach
                 </select>
             </div>
             {{-- select status --}}
             <div class="form-group col-md-6">
-                <label for='status'>Status Sekarang</label>
+                <label for='status'>Status Sekarang <span class="text-danger">*</span></label>
                 <select class="form-control select2" name='status' id="status">
                     <option value="" selected disabled>-Pilih Status-</option>
                     @foreach ($status as $s )
@@ -51,29 +58,42 @@
                 </select>
             </div>
             {{-- select detail_status --}}
-            <div class="form-group col-md-6">
-                <label for='instansi'>Detail Status</label>
-                <select class="form-control instansi" name='instansi' id="instansi">
-                    <option value="" selected disabled>-Pilih Detail Status-</option>
-                </select>
+            <div class="form-group col-md-6 detail">
+                <div class="pilih" id="pilih">
+                    <label for='instansi'>Detail Status <span class="text-danger">*</span></label>
+                    <select class="form-control instansi" name='instansi' id="instansi">
+                        <option value="" selected disabled>-Pilih Detail Status-</option>
+                    </select>
+                    @error('instansi')
+                        <div class="invalid-feedback">
+                        {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+                {{-- Cek kampus ada di list --}}
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input tidak-ada" name="tidak-ada" id="tidak-ada">
+                    <label class="form-check-label" for="tidak-ada">Data yang anda inginkan tidak ada? </label>
+                </div>
+                {{-- Input manual --}}
+                <div class="input-manual" id="input-manual">
+                    <label for="manual">Nama Kampus</label>
+                    <input type="text" name="instansi_manual" id="instansi_manual" class="form-control manual">
+                </div>
             </div>
-            {{-- select tempat --}}
-            <div class="form-group col-md-6">
-                <label for='detail_status'>Jurusan/ Pekerjaan</label>
-                <select class="form-control select2" name='detail_status'>
-                    <option value="" selected disabled>-Pilih Jurusan/ Pekerjaan-</option>
-                        @foreach ($detail_status as $detail)
-                        @if (old('detail_status')==$detail->id)
-                        <option value="{{ $detail->id }}" selected>{{ $detail->nama }}</option>
-                        @else
-                        <option value="{{ $detail->id }}">{{ $detail->nama }}</option>
-                        @endif
-                        @endforeach
-                </select>
+            {{-- input tempat --}}
+            <div class="form-group col-md-6 tempat">
+                <label id="tempat" for="detail_status">Jurusan/Pekerjaan <span class="text-danger">*</span></label>
+                <input type="text" name="detail_status" id="detail_status" class="form-control @error('detail_status') is-invalid @enderror" value="{{ old('detail_status') }}" required>
+                @error('detail_status')
+                <div class="invalid-feedback">
+                {{ $message }}
+                </div>
+                @enderror
             </div>
             {{-- select domisili --}}
             <div class="form-group col-md-6">
-                <label for='domisili'>Kota Domisili</label>
+                <label for='domisili'>Kota Domisili <span class="text-danger">*</span></label>
                 <select class="form-control longselect" name='domisili'>
                     <option value="" selected disabled>-Pilih Kota-</option>
                         @foreach ($kab as $list)
@@ -86,8 +106,8 @@
                 </select>
             </div>
             {{-- teman smasa --}}
-            <div class="form-group">
-                <label for="teman_smasa" class="d-block">Teman Smasa satu domisili/kampus</label>
+            <div class="form-group col-md-6">
+                <label for="teman_smasa" class="d-block">Teman Smasa satu domisili/kampus <span class="text-danger">*</span></label>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input @error('teman_smasa') is-invalid @enderror" type="radio" name="teman_smasa" value="Ada" id="teman_smasa" {{ old('teman_smasa')=='Ada' ? 'checked':''}}>
                   <label class="form-check-label" for="Ada">
@@ -108,7 +128,7 @@
             </div>
             {{-- angkatan --}}
             <div class="form-group col-md-6">
-                <label for='angkatan_id'>Pilih Angkatan Anda</label>
+                <label for='angkatan_id'>Pilih Angkatan Anda <span class="text-danger">*</span></label>
                 <select class="form-control select2" name='angkatan_id'>
                     <option value="" selected disabled>-Pilih Angkatan-</option>
                         @foreach ($angkatan as $angkat)
@@ -122,7 +142,7 @@
             </div>
             {{-- No-hp --}}
             <div class="form-group col-md-6">
-                <label for="nomor">Nomor Hp Aktif</label>
+                <label for="nomor">Nomor Hp Aktif <span class="text-danger">*</span></label>
                 <input type="number" class="form-control @error('nomor') is-invalid @enderror" id="nomor" name="nomor" required value="{{old('nomor') }}">
                 @error('nomor')
                     <div class="invalid-feedback">
@@ -131,36 +151,52 @@
                 @enderror
             </div>
             {{-- end row --}}
-            </div>
-            </form>
+            <i class="mb-2">Untuk tanda <span class="text-danger">*</span> adalah isian yang wajib</i>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit data</button>
+        </form>
         </div>
     </div>
-    @elseif(auth()->user()->role!='admin')
-        <div class="card">
-            <div class="card-header"><h4 class="text-danger">Mohon maaf halaman ini sedang dalam pengembangan</h4></div>
-        </div>
-    @endif
 @endsection
 @section('customjs')
     <script>
         $(document).ready(function () {
+            $('#input-manual').hide()
+            if($("#tidak-ada").change(function () { 
+                if ($(this).prop('checked')) {
+                    $('.input-manual').show()
+                    $('.manual').attr('required',true)
+                    $('.pilih').hide()
+                }else{
+                    $('.pilih').show()
+                    $('.input-manual').hide()
+                }
+             }));
             $('#instansi').select2({
                 minimumInputLength:3
             })
             $('#status').change(function (e) { 
                 e.preventDefault();
                 let statusId=$(this).val();
-                $.ajax({
-                    type: "post",
-                    url: "{{ route('cekDetail') }}",
-                    data: {id_status:statusId,_token:"{{ csrf_token() }}"},
-                    success: function (response) {
-                        $('.instansi').html("<option value=''>-Pilih Detail-</option>");
-                        $.each(response.detail, function (key, value) { 
-                             $('.instansi').append("<option value="+value.id+">"+value.nama+"</option>")
-                        });
-                    }
-                });
+                if(statusId==3||statusId==5){
+                    $('.detail').hide()
+                    $('#tempat').text("Kegiatan Sekarang")
+                }
+                else if(statusId==1||statusId==2||statusId==4){
+                    $('.detail').show()
+                    $('#tempat').text("Jurusan/Tempat Kerja")
+                    $.ajax({
+                        type: "post",
+                        url: "{{ route('cekDetail') }}",
+                        data: {id_status:statusId,_token:"{{ csrf_token() }}"},
+                        success: function (response) {
+                            $('.instansi').html("<option value=''>-Pilih Detail-</option>");
+                            $.each(response.detail, function (key, value) { 
+                                 $('.instansi').append("<option value="+value.id+">"+value.nama+"</option>")
+                            });
+                        }
+                    });
+                }
             });
         });
     </script>

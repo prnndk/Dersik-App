@@ -14,4 +14,8 @@ class status extends Model
     {
         return $this->hasMany(detailstatus::class);
     }
+    public function siswa()
+    {
+        return $this->hasMany(siswa::class);
+    }
 }
