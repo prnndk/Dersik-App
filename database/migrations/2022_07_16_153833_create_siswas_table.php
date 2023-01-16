@@ -28,6 +28,7 @@ return new class extends Migration
             $table->bigInteger('nomor')->length(15);
             $table->integer('review')->default(0)->length(1);
             $table->string('message');
+            $table->string('url')->length(32);
             $table->timestamps();
         });
     }

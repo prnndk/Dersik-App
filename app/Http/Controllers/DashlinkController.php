@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\dashlink;
 use App\Http\Requests\StoredashlinkRequest;
 use App\Http\Requests\UpdatedashlinkRequest;
+use Illuminate\Http\Request;
 
 class DashlinkController extends Controller
 {
@@ -15,7 +16,20 @@ class DashlinkController extends Controller
      */
     public function index()
     {
-        //
+        return view('dashboard.dashlinks.index',[
+            'data'=>dashlink::all(),
+            'btn_color'=>[
+                'Primary',
+                'Secondary',
+                'Success',
+                'Danger',
+                'Warning',
+                'Info',
+                'Light',
+                'Dark',
+                'Link'
+            ],
+        ]);
     }
 
     /**
@@ -36,9 +50,18 @@ class DashlinkController extends Controller
      */
     public function store(StoredashlinkRequest $request)
     {
-        //
-    }
+        $validated=$request->validated();
+        if($validated)
+        {
+            dashlink::create($validated);
+            return response()->json([
+                'status'=>200,
+                'success'=>'Data Added successfully.'
+            ]);
+        }
 
+    }
+    
     /**
      * Display the specified resource.
      *
@@ -82,5 +105,23 @@ class DashlinkController extends Controller
     public function destroy(dashlink $dashlink)
     {
         //
+    }
+    public function apiLink(Request $request)
+    {
+        $data=dashlink::where('id',$request->id)->first();
+        if($data)
+        {
+            return response()->json([
+                'status'=>200,
+                'data'=>$data,
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'status'=>404,
+                'data'=>'Data Not Found',
+            ]);
+        }
     }
 }

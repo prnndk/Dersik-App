@@ -23,8 +23,7 @@ class RegisPromController extends Controller
     {
         return view('dashboard.form.index',[
             'index'=>RegisProm::latest()->paginate(10)->withQueryString(),
-            'asu'=>RegisProm::all(),
-            'datauser'=>RegisProm::where('user_id',auth()->user()->id)->get()
+            'datauser'=>RegisProm::where('user_id',auth()->user()->id)->first()
         ]);
     }
 
@@ -61,7 +60,7 @@ class RegisPromController extends Controller
             'kelas_id'=>'required',
             'kesediaan'=>'required',
             'kedinasan'=>'required',
-            'tanggal'=>'date|nullable',
+            'tanggal'=>'date|nullable|required_if:kedinasan,==,Ikut',
             'no_hp'=>'required|digits_between:10,13|unique:regis_proms',
         ]);
         $validatedData['user_id']=auth()->user()->id;
@@ -150,8 +149,9 @@ class RegisPromController extends Controller
      * @param  \App\Models\RegisProm  $regisProm
      * @return \Illuminate\Http\Response
      */
-    public function destroy(RegisProm $regisProm)
+    public function destroy($id)
     {
+        $regisProm=RegisProm::where('id',$id)->first();
         RegisProm::destroy($regisProm->id);
         return redirect ('/dashboard/formprom')->with('success','Data has been deleted');
     }
@@ -166,15 +166,13 @@ class RegisPromController extends Controller
     public function undangan()
     {
         return view('dashboard.undangan',[
-            'dataundangan'=>RegisProm::where('user_id',auth()->user()->id)->get(),
+            'undangan'=>RegisProm::where('user_id',auth()->user()->id)->first(),
             'info'=>Informasi::all()
         ]);
     }
     public function scan()
     {
-        return view('dashboard.scan',[
-            'detailregis'=>RegisProm::all(),
-        ]);
+        return view('dashboard.scan');
     }
     public function verifikasi(Request $request)
     {

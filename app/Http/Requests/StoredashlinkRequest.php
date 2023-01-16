@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoredashlinkRequest extends FormRequest
@@ -13,7 +14,7 @@ class StoredashlinkRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return Auth::check();
     }
 
     /**
@@ -24,7 +25,11 @@ class StoredashlinkRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'nama' => 'required|string|max:255',
+            'route' => 'required|string|unique:dashlinks',
+            'icon' => 'required|string',
+            'btn_color' => 'required|string',
+            'informasi'=>'required|max:2'
         ];
     }
 }

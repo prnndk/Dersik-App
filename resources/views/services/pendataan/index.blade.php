@@ -2,7 +2,10 @@
 @section('webtitle','Pendataan Alumni')
 @section('container')
 <div class="section-header">
-    <h2>Pendataan Dersik 22</h2>
+    <div class="section-header-back">
+        <a href="{{ route('dashboard') }}" class="btn btn-icon"><i class="fas fa-arrow-left"></i></a>
+    </div>
+    <h1>Pendataan Dersik 22</h1>
     <div class="section-header-breadcrumb">
         <a href="{{ route('pendataan.create') }}" class="badge badge-primary text-decoration-none"><i class="fas fa-plus"></i> Buat Pendataan Baru</a>
     </div>
@@ -25,27 +28,33 @@
       <div class="card-body">
         <div class="stat my-2">
           <h5>Most class filling form</h5>
-          <div class="text-small float-right font-weight-bold text-muted">{{ $mostclass->count }}</div>
-          <div class="font-weight-bold mb-1">{{ $mostclass->kls->kelas }}</div>
-          <div class="progress" data-height="3" style="height: 3px;">
-            <div class="progress-bar" role="progressbar" data-width="{{ ($mostclass->count/$jmldata)*100 }}%" aria-valuenow="{{ $mostclass->count }}" aria-valuemin="0" aria-valuemax="{{ $jmldata }}" style="width: {{ ($mostclass->count/$jmldata)*100 }}%;"></div>
-          </div>
+          @if($mostclass!=null)
+            <div class="text-small float-right font-weight-bold text-muted">{{ $mostclass->count }}</div>
+            <div class="font-weight-bold mb-1">{{ $mostclass->kls->kelas }}</div>
+            <div class="progress" data-height="3" style="height: 3px;">
+              <div class="progress-bar" role="progressbar" data-width="{{ ($mostclass->count/$jmldata)*100 }}%" aria-valuenow="{{ $mostclass->count }}" aria-valuemin="0" aria-valuemax="{{ $jmldata }}" style="width: {{ ($mostclass->count/$jmldata)*100 }}%;"></div>
+            </div>
+          @endif
         </div>
         <div class="stat my-2">
           <h5>Most domicile</h5>
+          @if ($mostcity!=null)
           <div class="text-small float-right font-weight-bold text-muted">{{ $mostcity->count }}</div>
           <div class="font-weight-bold mb-1">{{ $mostcity->kab->name }}</div>
           <div class="progress" data-height="3" style="height: 3px;">
             <div class="progress-bar" role="progressbar" data-width="{{ ($mostcity->count/$jmldata)*100 }}%" aria-valuenow="{{ $mostcity->count }}" aria-valuemin="0" aria-valuemax="{{ $jmldata }}" style="width: {{ ($mostcity->count/$jmldata)*100 }}%;"></div>
           </div>
+          @endif
         </div>
         <div class="stat my-2">
           <h5>Most Agency/Univ</h5>
+          @if ($mostuni!=null)
           <div class="text-small float-right font-weight-bold text-muted">{{ $mostuni->count }}</div>
           <div class="font-weight-bold mb-1">{{ $mostuni->instansi }}</div>
           <div class="progress" data-height="3" style="height: 3px;">
             <div class="progress-bar" role="progressbar" data-width="{{ ($mostuni->count/$jmldata)*100 }}%" aria-valuenow="{{ $mostuni->count }}" aria-valuemin="0" aria-valuemax="{{ $jmldata }}" style="width: {{ ($mostuni->count/$jmldata)*100 }}%;"></div>
           </div>
+          @endif
         </div>
       </div>
     </div>

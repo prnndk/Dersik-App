@@ -23,7 +23,7 @@
     {{--Select2 Css--}}
     <link href="/css/select2.css" rel="stylesheet" />
     {{-- fontawesome kit --}}
-    {{--  <script src="https://kit.fontawesome.com/3e98a0e824.js" crossorigin="anonymous"></script>--}}
+     {{-- <script src="https://kit.fontawesome.com/3e98a0e824.js" crossorigin="anonymous"></script> --}}
     <link rel="stylesheet" href="/fas/css/all.min.css ">
       {{-- Bootstrap Icon --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
@@ -32,11 +32,11 @@
 </head>
 <body>
 <div id="app">
-      <div class="main-wrapper">
+      <div class="main-wrapper main-wrapper-1">
         @include('dashboard.layouts.top')
         @include('dashboard.layouts.side')
         @include('sweetalert::alert')
-        <div class="main-content">
+        <div class="main-content" style="min-height:587px;">
             <section class="section">
                 @yield('container')
             </section>

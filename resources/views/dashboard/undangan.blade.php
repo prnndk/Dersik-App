@@ -4,9 +4,8 @@
 <div class="card">
 
     <div class="card-body">
-        @foreach ($dataundangan as $undangan )
-        @foreach ($info as $i )
-
+        {{-- @foreach ($info as $i ) --}}
+        {{-- @dd($undangan) --}}
         @if ($undangan->statusbayar != 'Lunas')
         <h2 class="text-danger">Harap Selesaikan Pembayaran!</h2>
         @else
@@ -17,8 +16,8 @@
                 <p>Nama: {{ $undangan->nama }}</p>
                 <p>Kelas: {{ $undangan->kelas->kelas}}</p>
                 <p>Nomor Telepon: 0{{ $undangan->no_hp }}</p>
-                <p>Open Gate: {{ $i->open_gate }}</p>
-                <p>Tempat: {{ $i->tempat }}</p>
+                {{-- <p>Open Gate: {{ $i->open_gate }}</p>
+                <p>Tempat: {{ $i->tempat }}</p> --}}
                 <h6 class="text-justify">Diinformasikan untuk para sobat Dersik untuk datang tepat waktu sesuai dengan jadwal open gate diatas. Apabila terlambat konsekuensinya tidak mendapat polaroid, karena polaroid hanya tersedia pada masa open gate </h6>
             </div>
             <div class="col-md-3">
@@ -34,6 +33,5 @@
         @endif
     </div>
 </div>
-@endforeach
-        @endforeach
+    {{-- @endforeach  --}}
 @endsection

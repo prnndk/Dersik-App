@@ -7,12 +7,21 @@
                 <h4>Form Pendataan</h4>
             </div>
         <div class="card-body">
+        @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
             <form action="{{ route('pendataan.store') }}" role="form" method="post" autocomplete="off">
                 @csrf
             <div class="row">
                 <div class="form-group col-md-6">
                 <label for="nama">Nama Lengkap <span class="text-danger">*</span></label>
-                <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"  required autofocus value="{{ old('nama',auth()->user()->name) }}">
+                <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"  required autofocus value="{{ old('nama') }}">
                 @error('nama')
                 <div class="invalid-feedback">
                 {{ $message }}
@@ -22,7 +31,7 @@
                 {{-- input email --}}
                 <div class="form-group col-md-6">
                     <label for="email">Email <span class="text-danger">*</span></label>
-                    <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" required value="{{ auth()->user()->email,old('email') }}">
+                    <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" required value="{{ old('email') }}">
                 @error('email')
                 <div class="invalid-feedback">
                 {{ $message }}
@@ -56,6 +65,11 @@
                     @endif
                     @endforeach
                 </select>
+                @error('status')
+                    <div class="invalid-feedback">
+                      {{ $message }}
+                    </div>
+                @enderror
             </div>
             {{-- select detail_status --}}
             <div class="form-group col-md-6 detail">
@@ -80,6 +94,11 @@
                     <label for="manual">Nama Kampus</label>
                     <input type="text" name="instansi_manual" id="instansi_manual" class="form-control manual">
                 </div>
+                @error('instansi_manual')
+                    <div class="invalid-feedback">
+                      {{ $message }}
+                    </div>
+                @enderror
             </div>
             {{-- input tempat --}}
             <div class="form-group col-md-6 tempat">
@@ -104,6 +123,11 @@
                         @endif
                         @endforeach
                 </select>
+                @error('domisili')
+                    <div class="invalid-feedback">
+                      {{ $message }}
+                    </div>
+                @enderror
             </div>
             {{-- teman smasa --}}
             <div class="form-group col-md-6">
@@ -139,6 +163,11 @@
                         @endif
                         @endforeach
                 </select>
+                @error('angkatan_id')
+                    <div class="invalid-feedback">
+                      {{ $message }}
+                    </div>
+                @enderror
             </div>
             {{-- No-hp --}}
             <div class="form-group col-md-6">
@@ -171,10 +200,8 @@
                     $('.pilih').show()
                     $('.input-manual').hide()
                 }
-             }));
-            $('#instansi').select2({
-                minimumInputLength:3
-            })
+            }));
+            $('#instansi').select2();
             $('#status').change(function (e) { 
                 e.preventDefault();
                 let statusId=$(this).val();
@@ -190,9 +217,9 @@
                         url: "{{ route('cekDetail') }}",
                         data: {id_status:statusId,_token:"{{ csrf_token() }}"},
                         success: function (response) {
-                            $('.instansi').html("<option value=''>-Pilih Detail-</option>");
-                            $.each(response.detail, function (key, value) { 
-                                 $('.instansi').append("<option value="+value.id+">"+value.nama+"</option>")
+                            $('.instansi').append('<option value="" disabled selected>-Pilih Universitas/Nama Pekerjaan-</option>');
+                            $.each(response, function (key, value) {
+                                $('.instansi').append('<option value="'+value.id+'">'+value.nama+'</option>');
                             });
                         }
                     });

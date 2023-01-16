@@ -7,13 +7,19 @@ use App\Models\siswa;
 use App\Models\status;
 use App\Models\Regency;
 use App\Models\Angkatan;
+use App\Mail\PendataanMail;
+use Illuminate\Support\Str;
 use App\Models\detailstatus;
 use App\Models\tempatstatus;
 use Illuminate\Http\Request;
+use App\Jobs\SendPendataanMail;
 use Illuminate\Validation\Rule;
+use App\Mail\ReviewPendataanMail;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\StoresiswaRequest;
-use App\Http\Requests\UpdatesiswaRequest;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\UpdatesiswaRequest;
 
 class SiswaController extends Controller
 {
@@ -46,13 +52,20 @@ class SiswaController extends Controller
      */
     public function create()
     {
+        if(auth()->user()->role == 'User')
+        {
+            $data=siswa::where('user_id',auth()->user()->id)->first();
+            if($data)
+            {
+                return back()->with('info','Anda sudah melakukan pendataan, silahkan edit data anda jika ada kesalahan');
+            }
+        }
         return view('services.pendataan.create',[
             'kelas'=>kelas::all(),
             'kab'=>Regency::all(),
             'angkatan'=>Angkatan::all(),
             'status'=>status::all(),
             'instansi'=>detailstatus::all(),
-            // 'detail_status'=>tempatstatus::all(),
         ]);
     }
 
@@ -64,38 +77,38 @@ class SiswaController extends Controller
      */
     public function store(StoresiswaRequest $request)
     {
-        $validated=$request->validate([
-            'nama'=>'required|unique:siswas',
-            'email'=>'required|unique:siswas|email:dns',
-            'kelas'=>'required',
-            'status'=>'required',
-            'instansi'=>Rule::requiredIf($request->status == [1,2,4]),
-            'instansi_manual'=>Rule::requiredIf($request->status == [1,2,4]),
-            'detail_status'=>'required',
-            'domisili'=>'required',
-            'teman_smasa'=>'required',
-            'angkatan_id'=>'required',
-            'nomor'=>'required|digits_between:10,13|unique:siswas'
-        ]);
-        if ($request->instansi==null&&(in_array($request->status,[3,5]))) {
-            $validated['instansi']='Gapyear/Menikah';
-        }
-        if($validated['instansi']){
-            $get=detailstatus::where('id',$validated['instansi'])->first();
-            $validated['instansi']=$get->nama;
-        }
-        if($request->instansi==null&&$request->instansi_manual){
-            $validated['instansi']=$validated['instansi_manual'];
-        }
-        $validated['user_id']=auth()->user()->id;
-        $validated['review']=0;
-        $validated['message']="Belum ada pesan";
-        $store=Siswa::create($validated);
-        if ($store){
-            return redirect(route('pendataan.index'))->with('success','Terimakasih Telah Mengisi Pendataan, data anda akan kami verifikasi');
-        } else {
-           return redirect(route('pendataan.index'))->with('toast_error','Terjadi Kesalahan Ulangi Pengisian Form Anda');
-        }
+        dd($request->all());
+        // $validated=$request->validated();
+        // if ($request->instansi==null&&(in_array($request->status,[3,5]))) {
+        //     $validated['instansi']='Gapyear/Menikah';
+        // }
+        // if($validated['instansi']){
+        //     $get=detailstatus::where('id',$validated['instansi'])->first();
+        //     $validated['instansi']=$get->nama;
+        // }
+        // if($request->instansi==null&&$request->instansi_manual){
+        //     $validated['instansi']=$validated['instansi_manual'];
+        // }
+        // if(auth()->user()){
+        //     $cek=siswa::where('user_id',auth()->user()->id)->first();
+        //     if($cek){
+        //         return back()->with('info','Anda sudah melakukan pendataan, silahkan edit data anda jika ada kesalahan');
+        //     }else{
+        //         $validated['user_id']=auth()->user()->id;
+        //     }
+        // }else{
+        //     $validated['user_id']=null;
+        // }
+        // $validated['url']=Str::random(32);
+        // $validated['review']=0;
+        // $validated['message']="Belum ada pesan";
+        // $store=Siswa::create($validated);
+        // Mail::to($store->email)->queue(new PendataanMail($store));
+        // if ($store){
+        //     return redirect(route('pendataan.index'))->with('success','Terimakasih Telah Mengisi Pendataan, data anda akan kami verifikasi');
+        // } else {
+        //    return redirect(route('pendataan.index'))->with('toast_error','Terjadi Kesalahan Ulangi Pengisian Form Anda');
+        // }
     }
 
     /**
@@ -107,9 +120,13 @@ class SiswaController extends Controller
     public function show($id)
     {
         $siswa=siswa::where('id',$id)->first();
+        if($siswa){
         return view('services.pendataan.view',[
             'data'=>$siswa,
         ]);
+        }else{
+            return redirect(route('pendataan.index'))->with('toast_error','Data Tidak Ditemukan');
+        }
     }
 
     /**
@@ -157,6 +174,7 @@ class SiswaController extends Controller
             'message'=>Rule::requiredIf($request->review == 2),
         ]);
         $upload=siswa::where('id',$siswa->id)->update($validUpdate);
+        Mail::to($siswa->email)->queue(new ReviewPendataanMail($siswa));
         if ($upload){
             return redirect(route('pendataan.index'))->with('success','Data Berhasil Diupdate');
         } else {
@@ -182,10 +200,7 @@ class SiswaController extends Controller
     public function cekDetail(Request $req)
     {
        $detail=detailstatus::where('id_status',$req->id_status)->get();
-        return response()->json([
-        'status'=>200,
-        'detail'=>$detail
-       ]);
+        return response()->json($detail,200);
     }
     public function publicform()
     {
@@ -195,6 +210,13 @@ class SiswaController extends Controller
             'angkatan'=>Angkatan::all(),
             'status'=>status::all(),
             'instansi'=>detailstatus::all(),
+        ]);
+    }
+    public function cekpendataan($url)
+    {
+        $siswa=siswa::where('url',$url)->first();
+        return view('services.pendataan.cek',[
+            'datum'=>$siswa
         ]);
     }
 }

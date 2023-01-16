@@ -61,4 +61,9 @@ class DashboardController extends Controller
             'text'=>$text
         ]);
     }
+
+    public function shortlink()
+    {
+       return view('services.shortlink');
+    }
 }

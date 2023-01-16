@@ -35,7 +35,11 @@
                    <td>{{ $list->name }}</td>
                    <td>{{ $list->username }}</td>
                    <td>{{ $list->email }}</td>
+                   @if ($list->Kelas)
                    <td>{{ $list->Kelas->kelas }}</td>
+                   @else
+                    <td>No Data</td>
+                   @endif
                    <td>
                     <a href="/userlist/{{$list->id}}" class="badge badge-info mt-1"><i class="far fa-eye"></i></a>
                     <a href="/userlist/{{ $list->id }}/edit" class="badge badge-warning mt-1"><i class="far fa-edit"></i></a>

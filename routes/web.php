@@ -20,6 +20,7 @@ use App\Http\Controllers\UserdataQRController;
 use App\Http\Controllers\DetailstatusController;
 use App\Http\Controllers\TempatstatusController;
 use App\Http\Controllers\dashboardUserController;
+use App\Http\Controllers\DashlinkController;
 use App\Http\Controllers\KateginfoController;
 use App\Models\pemilih;
 use Illuminate\Support\Facades\Artisan;
@@ -37,7 +38,8 @@ use Illuminate\Support\Facades\Artisan;
 
 Route::get('/',[DashboardController::class,'index']);
 Route::get('/korwil',[DashboardController::class,'korwil']);
-
+Route::get('pendataan/public', [SiswaController::class, 'publicform'] )->name('publicform');
+Route::get('pendataan/cek/{url}', [SiswaController::class, 'cekpendataan'] )->name('cekPendataan');
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -77,37 +79,40 @@ Route::get('link_storage', function () {
     Artisan::call('storage:link');
     return redirect('/dashboard')->with('success', 'Link storage berhasil dibuat');
 });
-});
-Route::resource('/dashboard/formprom', RegisPromController::class)->middleware('auth');
-Route::resource('/informasi', InformasiController::class)->middleware('auth');
-Route::resource('/pendataan', SiswaController::class)->middleware('auth');
-Route::resource('/dashboard/kelas', KelasController::class)->middleware('auth');
-Route::get('/dashboard/informasipembayaran', [RegisPromController::class, 'infobayar'] )->middleware('auth');
-Route::get('/dashboard/undangan', [RegisPromController::class, 'undangan'] )->middleware('auth');
+Route::resource('/dashboard/formprom', RegisPromController::class);
+Route::resource('/informasi', InformasiController::class);
+Route::resource('/pendataan', SiswaController::class);
+Route::resource('/dashboard/kelas', KelasController::class);
+Route::get('/dashboard/informasipembayaran', [RegisPromController::class, 'infobayar'] );
+Route::get('/dashboard/undangan', [RegisPromController::class, 'undangan'] );
 
-Route::resource('/dashboard/regis-mail',RegisEmailController::class)->middleware('auth');
-Route::resource('/dashboard/ketua',KetuaController::class)->middleware('auth');
-Route::resource('/dashboard/angkatan',AngkatanController::class)->middleware('auth');
+Route::resource('/dashboard/regis-mail',RegisEmailController::class);
+Route::resource('/dashboard/ketua',KetuaController::class);
+Route::resource('/dashboard/angkatan',AngkatanController::class);
 
-Route::resource('/data/status',StatusController::class)->middleware('auth');
-Route::resource('/data/instansi',DetailstatusController::class)->middleware('auth');
-Route::resource('/data/detail-status',TempatstatusController::class)->middleware('auth');
+Route::resource('/data/status',StatusController::class);
+Route::resource('/data/instansi',DetailstatusController::class);
+Route::resource('/data/detail-status',TempatstatusController::class);
 
 Route::controller(PemilihController::class)->group(function(){
-    Route::get('/vote','homevote')->name('vote')->middleware('auth');
-    Route::get('/vote/me','usertoken')->name('usertoken')->middleware('auth');
-    Route::get('/vote/pilih/{vote:link}','milih')->name('pilihHome')->middleware('auth');
-    Route::get('/vote/end','logouttoken')->name('logoutVote')->middleware('auth');
+    Route::get('/vote','homevote')->name('vote');
+    Route::get('/vote/me','usertoken')->name('usertoken');
+    Route::get('/vote/pilih/{vote:link}','milih')->name('pilihHome');
+    Route::get('/vote/end','logouttoken')->name('logoutVote');
     Route::post('/vote/cek','cektoken')->name('cekToken');
-    Route::get('/vote/simpan/{id}','simpan')->name('simpan')->middleware('auth');
-    Route::get('/api/calon/{id}','fetchcalon')->name('getDataCalon')->middleware('auth');
-    Route::get('/vote/qc/{vote:link}','lihathasil')->name('quickcount')->middleware('auth');
+    Route::get('/vote/simpan/{id}','simpan')->name('simpan');
+    Route::get('/api/calon/{id}','fetchcalon')->name('getDataCalon');
+    Route::get('/vote/qc/{vote:link}','lihathasil')->name('quickcount');
     Route::post('/pemilih/generate/angkatan','angkatgenerate')->name('generateAngkat')->middleware('admin');
     Route::post('/pemilih/generate/all','allgenerate')->name('generateAll')->middleware('admin');
 });
-Route::controller(SiswaController::class)->group(function(){
-    Route::post('/api/dtlstts','cekDetail')->name('cekDetail')->middleware('auth');
-});
-Route::get('publicform/pendataan', [SiswaController::class, 'publicform'] )->name('publicform');
+// Route::controller(SiswaController::class)->group(function(){
+//     Route::post('/api/dtlstts','cekDetail')->name('cekDetail');
+// });
+Route::resource('/dashboard/links',DashlinkController::class)->middleware('admin')->except(['create','show']);
+Route::get('api/link',[DashlinkController::class,'apiLink'])->name('apiLink')->middleware('admin');
+Route::get('shortlink',[DashboardController::class,'shortlink'])->name('shortlink');
+}); 
+// end group of auth
     
 

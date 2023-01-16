@@ -19,8 +19,6 @@
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"> </script>
 <script>
     function onScanSuccess(decodedText, decodedResult) {
-        // handle the scanned code as you like, for example:
-        // console.log(`Code matched = ${decodedText}`, decodedResult);
         $("#result").val(decodedText)
         let id = decodedText
 
@@ -53,6 +51,11 @@
                         })
                         }
                         if (response.berhasil){
+                            Swal.fire({
+                            icon:'success',
+                            title:'Berhasil',
+                            text:'QrCode Berhasil Diverifikasi, dan terdata',
+                            })
                          window.location.replace("/userdata/"+response.dataid+"")
                         }
 
@@ -73,7 +76,13 @@
     function onScanFailure(error) {
         // handle scan failure, usually better to ignore and keep scanning.
         // for example:
-        console.warn(`Code scan error = ${error}`);
+        // console.warn(`Code scan error = ${error}`);
+        Swal.fire({
+            type:'error',
+            icon:"error",
+            title:'Oops...',
+            text:'Error scanning QR Code'
+        })
     }
 
     let html5QrcodeScanner = new Html5QrcodeScanner(
