@@ -21,4 +21,8 @@ class Angkatan extends Model
     {
         return $this->hasMany(Informasi::class);
     }
+    public function siswa()
+    {
+        return $this->hasMany(siswa::class);
+    }
 }

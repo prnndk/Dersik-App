@@ -19,4 +19,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::post('dtlstts',[SiswaController::class,'cekDetail'])->name('cekDetail');
-Route::post('siswa',[SiswaController::class,'store']);
+Route::post('siswa',[SiswaController::class,'storeAPI']);

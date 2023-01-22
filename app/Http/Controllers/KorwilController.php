@@ -19,7 +19,10 @@ class KorwilController extends Controller
         return view('dashboard.datakorwil.index',[
             'korwil'=>korwil::all(),
             'city'=>Regency::all(),
-            'user'=>User::all()
+            'user'=>User::all(),
+            'grouped'=>korwil::orderBy('kota_id')->get()->groupBy(function($data){
+                return $data->kota->name;
+            }),
         ]);
     }
 
@@ -46,7 +49,7 @@ class KorwilController extends Controller
         'kota_id'=>'required|numeric',
         'number'=>'required|numeric|digits_between:10,13|unique:korwils',
         'kontaklain'=>'required|unique:korwils',
-        'siswa_id'=>'required|numeric',
+        'siswa_id'=>'required|numeric|unique:korwils',
         ]);
         korwil::create($valData);
         return redirect(route('korwil.index'))->with('success','Data Korwil Baru Berhasil Ditambahkan');

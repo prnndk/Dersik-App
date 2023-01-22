@@ -14,5 +14,9 @@ public function kota()
 {
     return $this->belongsTo(Regency::class,'kota_id');
 }
+public function siswa()
+{
+    return $this->belongsTo(User::class,'siswa_id');
+}
 
 }

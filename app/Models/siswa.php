@@ -22,4 +22,12 @@ class siswa extends Model
     {
         return $this->belongsTo(Regency::class, 'domisili');
     }
+    public function angkat()
+    {
+        return $this->belongsTo(Angkatan::class, 'angkatan_id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

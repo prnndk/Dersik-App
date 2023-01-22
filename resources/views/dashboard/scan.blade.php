@@ -10,9 +10,20 @@
             <div class="col-md-6">
                 <div id="reader" width="600px"></div>
             </div>
-                <div class="col-md-6">
-                   <input type="text" width="200px" placeholder="Hasil QR" id="result">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="choose_route">Pilih Scan</label>
+                    <select name="choose_route" id="choose_route" class="form-control select2">
+                        <option disabled selected>Pilih Type Scan</option>
+                        <option value="1">Scan Prom QR Code</option>
+                        <option value="2">Scan Pendataan QR Code</option>
+                    </select>
                 </div>
+                <div class="form-group">
+                    <label for="result">Generated URL</label>
+                    <input type="text" class="form-control" placeholder="Hasil QR" id="result" disabled>
+                </div>
+            </div>
         </div>
         </div>
 </div>
@@ -21,9 +32,6 @@
     function onScanSuccess(decodedText, decodedResult) {
         $("#result").val(decodedText)
         let id = decodedText
-
-        csrf_token = $('meta[name="csrf_token"]').attr('content');
-
         Swal.fire({
             title: 'Scan Berhasil',
             text: 'Cek data pada QR',
@@ -77,12 +85,12 @@
         // handle scan failure, usually better to ignore and keep scanning.
         // for example:
         // console.warn(`Code scan error = ${error}`);
-        Swal.fire({
-            type:'error',
-            icon:"error",
-            title:'Oops...',
-            text:'Error scanning QR Code'
-        })
+        // Swal.fire({
+        //     type:'error',
+        //     icon:"error",
+        //     title:'Oops...',
+        //     text:'Error scanning QR Code'
+        // })
     }
 
     let html5QrcodeScanner = new Html5QrcodeScanner(

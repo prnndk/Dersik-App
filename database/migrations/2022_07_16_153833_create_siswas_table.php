@@ -22,13 +22,16 @@ return new class extends Migration
             $table->string('instansi')->length(120);
             $table->string('detail_status')->length(120);
             $table->integer('domisili');
-            $table->foreignId('user_id');
+            $table->foreignId('user_id')->nullable();
             $table->foreignId('angkatan_id');
             $table->string('teman_smasa')->length(100);
+            $table->integer('banyak_teman')->length(3)->nullable();
             $table->bigInteger('nomor')->length(15);
             $table->integer('review')->default(0)->length(1);
             $table->string('message');
-            $table->string('url')->length(32);
+            $table->uuid('url')->length(32);
+            $table->integer('pengajuan')->default(0)->length(1);
+            $table->ipAddress('ip');
             $table->timestamps();
         });
     }

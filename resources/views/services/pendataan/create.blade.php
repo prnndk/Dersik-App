@@ -7,17 +7,8 @@
                 <h4>Form Pendataan</h4>
             </div>
         <div class="card-body">
-        @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-            <form action="{{ route('pendataan.store') }}" role="form" method="post" autocomplete="off">
-                @csrf
+            <form action="{{ route('pendataan.store') }}" id="form" role="form" method="post" autocomplete="off">
+            @csrf
             <div class="row">
                 <div class="form-group col-md-6">
                 <label for="nama">Nama Lengkap <span class="text-danger">*</span></label>
@@ -131,25 +122,23 @@
             </div>
             {{-- teman smasa --}}
             <div class="form-group col-md-6">
-                <label for="teman_smasa" class="d-block">Teman Smasa satu domisili/kampus <span class="text-danger">*</span></label>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input @error('teman_smasa') is-invalid @enderror" type="radio" name="teman_smasa" value="Ada" id="teman_smasa" {{ old('teman_smasa')=='Ada' ? 'checked':''}}>
-                  <label class="form-check-label" for="Ada">
-                    Iya, Ada teman
-                  </label>
+                <div class="section-title mt-0">Punya teman satu domisili</div>
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" name="teman_smasa" id="teman_smasa" class="custom-control-input" value="Tidak Ada">
+                    <label for="teman_smasa" class="custom-control-label">Apakah ada teman smasa?</label>
                 </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input @error('teman_smasa') is-invalid @enderror" type="radio" name="teman_smasa" value="Tidak Ada" id="teman_smasa" {{ old('teman_smasa')=="Tidak Ada" ? 'checked':'' }}>
-                  <label class="form-check-label" for="Tidak Ada">
-                   Tidak ada
-                  </label>
-                </div>
-                @error('teman_smasa')
+                <div id="block_banyak_teman">
+                    <label for="banyak_teman">Banyak Teman<span class="text-danger">*</span></label>
+                    <input type="number" class="form-control @error('banyak_teman') is-invalid @enderror" id="banyak_teman" name="banyak_teman" value="{{old('banyak_teman') }}">
+                    @error('banyak_teman')
                     <div class="invalid-feedback">
-                      {{ $message }}
+                        {{ $message }}
                     </div>
-                @enderror
+                    @enderror
+                </div>
             </div>
+            {{-- banyak teman --}}
+                
             {{-- angkatan --}}
             <div class="form-group col-md-6">
                 <label for='angkatan_id'>Pilih Angkatan Anda <span class="text-danger">*</span></label>
@@ -172,7 +161,7 @@
             {{-- No-hp --}}
             <div class="form-group col-md-6">
                 <label for="nomor">Nomor Hp Aktif <span class="text-danger">*</span></label>
-                <input type="number" class="form-control @error('nomor') is-invalid @enderror" id="nomor" name="nomor" required value="{{old('nomor') }}">
+                <input type="tel" class="form-control @error('nomor') is-invalid @enderror" id="nomor" name="nomor" required value="{{old('nomor') }}">
                 @error('nomor')
                     <div class="invalid-feedback">
                       {{ $message }}
@@ -182,7 +171,7 @@
             {{-- end row --}}
             <i class="mb-2">Untuk tanda <span class="text-danger">*</span> adalah isian yang wajib</i>
         </div>
-        <button class="btn btn-primary" type="submit">Submit data</button>
+        <button class="btn btn-primary" id="submitBtn" type="submit">Submit data</button>
         </form>
         </div>
     </div>
@@ -191,6 +180,7 @@
     <script>
         $(document).ready(function () {
             $('#input-manual').hide()
+            $('#block_banyak_teman').hide()
             if($("#tidak-ada").change(function () { 
                 if ($(this).prop('checked')) {
                     $('.input-manual').show()
@@ -199,6 +189,15 @@
                 }else{
                     $('.pilih').show()
                     $('.input-manual').hide()
+                }
+            }));
+            if($("#teman_smasa").change(function () { 
+                if ($(this).prop('checked')) {
+                    $('#block_banyak_teman').show()
+                    $('#banyak_teman').attr('required',true)
+                }else{
+                    $('#block_banyak_teman').hide()
+                    $('#banyak_teman').attr('required',false)
                 }
             }));
             $('#instansi').select2();
@@ -225,6 +224,11 @@
                     });
                 }
             });
+            $('#submitBtn').click(function (e){
+                $(this).attr('disabled',true);
+                $(this).addClass('btn-progress');
+                $('#form').submit();
+            })
         });
     </script>
 @endsection

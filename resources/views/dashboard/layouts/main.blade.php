@@ -38,7 +38,9 @@
         @include('sweetalert::alert')
         <div class="main-content" style="min-height:587px;">
             <section class="section">
-                @yield('container')
+              <div class="section">
+                  @yield('container')
+              </div>
             </section>
           @yield('bawahsection')
         </div>

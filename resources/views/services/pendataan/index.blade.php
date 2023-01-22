@@ -85,9 +85,9 @@
               <td>
                 <div class="dropdown"><a href="#" class="dropdown-toggle badge badge-primary" data-toggle="dropdown"><i class="fas fa-list"></i></a>
                 <div class="dropdown-menu dropdown-menu-right">
-                  <a href="{{ route('pendataan.show',$data->id) }}" class="dropdown-item has-icon"><i class="far fa-eye"></i> View</a>
-                  <a href="{{ route('pendataan.edit',$data->id) }}" class="dropdown-item has-icon"><i class="fas fa-pencil"></i> Edit</a>
-                  <button class="dropdown-item has-icon btn btn-icon-left" id="delete" data-form-id="{{ $data->id }}"><i class="fas fa-trash"></i> Delete</button>
+                  <a href="{{ route('pendataan.show',$data->url) }}" class="dropdown-item has-icon"><i class="far fa-eye"></i> View</a>
+                  <a href="{{ route('pendataan.edit',$data->url) }}" class="dropdown-item has-icon"><i class="fas fa-pencil"></i> Edit</a>
+                  <button class="dropdown-item has-icon btn btn-icon-left delete" id="delete" data-form-id="{{ $data->id }}"><i class="fas fa-trash"></i> Delete</button>
                 </div>
                 </div>
               </td>
@@ -115,7 +115,7 @@
                 <th>Instansi</th>
                 <th>Detail Jurusan / Pekerjaan</th>
               </tr>
-              <tr data-href="{{ route('pendataan.show',$data->id) }}">
+              <tr data-href="{{ route('pendataan.show',$data->url) }}">
                 <td>{{ $data->kls->kelas }}</td>
                 <td>{{ $data->sttus->nama }}</td>
                 <td>{{ $data->instansi }}</td>
@@ -149,7 +149,7 @@ $(document).ready(function($) {
   $('*[data-href]').on('click', function() {
     window.location = $(this).data("href");
   });
-  $('#delete').on('click',function(){
+  $('.delete').on('click',function(){
     var id = $(this).data('form-id');
     Swal.fire({
       title: "Apakah anda yakin?",

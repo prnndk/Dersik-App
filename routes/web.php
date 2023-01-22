@@ -1,18 +1,23 @@
 <?php
 
 use App\Models\siswa;
+use App\Models\pemilih;
 use App\Models\Informasi;
 use App\Models\RegisProm;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\KetuaController;
 use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\PemilihController;
 use App\Http\Controllers\AngkatanController;
+use App\Http\Controllers\DashlinkController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataketuaController;
 use App\Http\Controllers\InformasiController;
+use App\Http\Controllers\KateginfoController;
 use App\Http\Controllers\RegisPromController;
 use App\Http\Controllers\DomainlistController;
 use App\Http\Controllers\RegisEmailController;
@@ -20,10 +25,6 @@ use App\Http\Controllers\UserdataQRController;
 use App\Http\Controllers\DetailstatusController;
 use App\Http\Controllers\TempatstatusController;
 use App\Http\Controllers\dashboardUserController;
-use App\Http\Controllers\DashlinkController;
-use App\Http\Controllers\KateginfoController;
-use App\Models\pemilih;
-use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,7 +82,9 @@ Route::get('link_storage', function () {
 });
 Route::resource('/dashboard/formprom', RegisPromController::class);
 Route::resource('/informasi', InformasiController::class);
-Route::resource('/pendataan', SiswaController::class);
+Route::resource('/pendataan', SiswaController::class)->except(['show','update']);
+Route::put('/pendataan/{url}', [SiswaController::class, 'update'] )->name('pendataan.update');
+Route::get('/pendataan/{url}', [SiswaController::class, 'show'] )->name('pendataan.show');
 Route::resource('/dashboard/kelas', KelasController::class);
 Route::get('/dashboard/informasipembayaran', [RegisPromController::class, 'infobayar'] );
 Route::get('/dashboard/undangan', [RegisPromController::class, 'undangan'] );
@@ -93,7 +96,7 @@ Route::resource('/dashboard/angkatan',AngkatanController::class);
 Route::resource('/data/status',StatusController::class);
 Route::resource('/data/instansi',DetailstatusController::class);
 Route::resource('/data/detail-status',TempatstatusController::class);
-
+Route::resource('/agenda',AgendaController::class);
 Route::controller(PemilihController::class)->group(function(){
     Route::get('/vote','homevote')->name('vote');
     Route::get('/vote/me','usertoken')->name('usertoken');

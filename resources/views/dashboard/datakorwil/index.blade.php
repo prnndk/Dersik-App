@@ -1,34 +1,41 @@
 @extends('dashboard.layouts.main')
 @section('webtitle','Dashboard Korwil')
 @section('container')
-    <div class="card">
-        <div class="card-header">
-            <h4>Data Korwil Dersik 22</h4>
-            <div class="card-header-action">
-                <button class="btn btn-primary text-decoration-none" data-bs-toggle="modal" data-bs-target="#tambah"><i class="fas fa-plus"></i> Tambah Korwil</button>
-            </div>
-        </div>
+<div class="section-header">
+    <div class="section-header-back">
+        <a href="{{ route('dashboard') }}" class="btn btn-icon"><i class="fas fa-arrow-left"></i></a>
     </div>
+        <h1>Data Korwil Dersik 22</h1>
+    <div class="section-header-breadcrumb">
+        <button class="btn btn-primary text-decoration-none" data-bs-toggle="modal" data-bs-target="#tambah"><i class="fas fa-plus"></i> Tambah Korwil</button>
+    </div>
+</div>
+<div class="section-body">
     <div class="row">
-        @foreach($korwil as $koor)
-        <div class="col-md-4">
-            <div class="card card-danger">
-                <div class="card-header">
-                    <h4>{{ $koor->PJ }}</h4>
-                    <div class="card-header-action">
-                        <span class="badge badge-info">{{ $koor->kota->name }}</span>
+        @foreach ($grouped as $group )
+        <div class="col-md-6">
+            <h2 class="section-title">{{ $group->first()->kota->name }}</h2>
+            <p class="section-lead">Data koordinator wilayah</p>
+            <div class="row">
+                @foreach ($group as $data )
+                <div class="card card-info col-md-5 mx-2">
+                    <div class="card-header">
+                        <h4>{{ $data->PJ }}</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            <li>Nomor HP: {{ $data->number }}</li>
+                            <li>Kontak Lain: {{ $data->kontaklain }}</li>
+                            <li>Nama User: {{ $data->siswa->name }}</li>
+                        </ul>
                     </div>
                 </div>
-                <div class="card-body">
-                    <ul>
-                        <li>Phone Number: +62{{ $koor->number }}</li>
-                        <li>Instagram/line/telegram: {{ $koor->kontaklain }}</li>
-                    </ul>
-                </div>
+                @endforeach
             </div>
         </div>
         @endforeach
     </div>
+</div>
 @endsection
 @section('bawahsection')
     {{-- Tambah MODAL --}}

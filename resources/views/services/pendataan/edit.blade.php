@@ -151,7 +151,7 @@
         <div class="card-body">
             <div class="form-group">
                 <label for="review">Status Pendataan</label>
-                <select class="form-control" name="review" id="review">
+                <select class="form-control select2" name="review" id="review">
                     <option value="0" {{ old('review',$data->review)=='0' ? 'selected':'' }}>Dalam Peninjauan</option>
                     <option value="1" {{ old('review',$data->review)=='1' ? 'selected':'' }}>Diterima</option>
                     <option value="2" {{ old('review',$data->review)=='2' ? 'selected':'' }}>Ditolak</option>
@@ -159,7 +159,7 @@
             </div>
             <div class="form-group" id="messagebox">
                 <label for="message">Review Penolakan</label>
-                <input type="text" class="form-control @error('message') is-invalid @enderror" id="message" name="message" value="{{ old('message') }}">
+                <input type="text" class="form-control @error('message') is-invalid @enderror" id="message" name="message" value="{{ old('message',$data->message) }}">
                 @error('message')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -189,48 +189,50 @@
                     $('#message').val('no message');
                 }
             });
+            if($('#review').val()=='2'){
+                $('#messagebox').show()}
             $('#delete').on('click',function(){
-    var id = $(this).data('form-id');
-    Swal.fire({
-      title: "Apakah anda yakin?",
-      text: "Data yang sudah dihapus tidak dapat dikembalikan!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Ya, hapus data!",
-      cancelButtonText: "Tidak, batalkan!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        $.ajax({
-          url: "{{ url('/pendataan') }}/"+id,
-          type: "POST",
-          data: {
-          '_method': 'DELETE',
-          '_token': "{{ csrf_token() }}"
-          },
-          success: function(response){
+            var id = $(this).data('form-id');
             Swal.fire({
-              title: "Berhasil!",
-              text:''+response.message+'',
-              icon: "success",
+            title: "Apakah anda yakin?",
+            text: "Data yang sudah dihapus tidak dapat dikembalikan!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, hapus data!",
+            cancelButtonText: "Tidak, batalkan!",
+            }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                url: "{{ url('/pendataan') }}/"+id,
+                type: "POST",
+                data: {
+                '_method': 'DELETE',
+                '_token': "{{ csrf_token() }}"
+                },
+                success: function(response){
+                    Swal.fire({
+                    title: "Berhasil!",
+                    text:''+response.message+'',
+                    icon: "success",
+                    });
+                window.location.href = "{{ url('/pendataan') }}";
+                },
+                error: function(data){
+                    Swal.fire("Data gagal dihapus", {
+                    icon: "error",
+                    });
+                }
+                });
+            } else {
+                Swal.fire({
+                icon:'info',
+                title:'Data tidak jadi dihapus',
+                text:'Data anda aman',
+                showCloseButton: true,
+                });
+            }
             });
-          window.location.href = "{{ url('/pendataan') }}";
-          },
-          error: function(data){
-            Swal.fire("Data gagal dihapus", {
-              icon: "error",
-            });
-          }
         });
-      } else {
-        Swal.fire({
-          icon:'info',
-          title:'Data tidak jadi dihapus',
-          text:'Data anda aman',
-          showCloseButton: true,
-        });
-      }
-    });
-  });
         });
     </script>
 @endsection

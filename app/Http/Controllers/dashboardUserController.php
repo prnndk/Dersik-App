@@ -12,6 +12,7 @@ use App\Http\Controllers;
 use App\Imports\UserImport;
 use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
+use Termwind\Components\Dd;
 
 class dashboardUserController extends Controller
 {
@@ -150,7 +151,7 @@ class dashboardUserController extends Controller
     }
     public function importuser(Request $request)
     {
-        Excel::import(new UserImport,$request->file('file')->store('temp'));
+        $import=Excel::import(new UserImport,$request->file('file')->store('temp'));
         return redirect(route('userlist.index'))->with('success','Berhasil Import Data!');
     }
 }

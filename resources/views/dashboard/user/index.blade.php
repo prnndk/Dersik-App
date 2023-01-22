@@ -67,14 +67,21 @@
             </button>
         </div>
         <div class="modal-body">
-            <form action="{{ route('import.user') }}" role="form" method="post" enctype="multipart/form-data">
+            <form action="{{ route('import.user') }}" id="formSubmit" role="form" method="post" enctype="multipart/form-data">
             @csrf
-            <div class="form-group">
-                <input type="file" name="file" id="file" accept=".xlsx, .xls, .csv">
+            <div class="custom-file">
+                <input type="file" name="file" id="file" class="custom-file-input @error('teman_smasa') is-invalid @enderror" accept=".xlsx, .xls, .csv">
+                <label for="file" class="custom-file-label">Choose File</label>
+                <small class="form-text text-muted">Hanya menerima extensi .xlsx .xls .csv</small>
+                @error('teman_smasa')
+                    <div class="invalid-feedback">
+                      {{ $message }}
+                    </div>
+                @enderror
             </div>
         </div>
         <div class="modal-footer bg-whitesmoke br">
-            <button type="submit" class="btn btn-primary">Tambahkan Data</button>
+            <button type="submit" id="modalSubmit" class="btn btn-primary">Tambahkan Data</button>
         </div>
             </form>
         </div>
@@ -83,9 +90,25 @@
 @endsection
 @section('customjs')
 <script>
+    @if (session()->has('error'))
+    $('#modal').modal('show');                   
+    @endif
     $('#import').click(function (e) { 
         e.preventDefault();
         $('#modal').modal('show')
+    });
+    $('#modalSubmit').attr('disabled',true);
+    $('#file').change(function (e) { 
+        e.preventDefault();
+        var fileName = e.target.files[0].name;
+        $('.custom-file-label').html(fileName);
+        $('#modalSubmit').attr('disabled',false);
+    });
+    $('#modalSubmit').click(function (e) { 
+        e.preventDefault();
+        $('#modalSubmit').addClass('btn-progress');
+        $('#modalSubmit').attr('disabled',true);
+        $('#formSubmit').submit()
     });
 </script>
 @endsection

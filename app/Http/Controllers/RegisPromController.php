@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\kelas;
+use App\Models\siswa;
 use App\Models\Informasi;
 use App\Models\RegisProm;
 use Illuminate\Support\Str;
@@ -176,16 +177,16 @@ class RegisPromController extends Controller
     }
     public function verifikasi(Request $request)
     {
-        // dd($request->qr_code);
         $dataqr=RegisProm::where("qr_code",$request->qr_code)->first();
-        if($dataqr==null){
-            return response()->json([
-                "status_error"=>"Data Tidak Valid"
-            ]);
-        }
-        return response()->json([
-                "berhasil"=>"dataada",
-                "dataid"=>$dataqr->id,
-            ]);
+        $qrpendataan=siswa::where('url',$request->qr_code)->first();
+       if(!$dataqr&&!$qrpendataan){
+           return response()->json('Not Found',404);
+       }else if($dataqr){
+           return response()->json($dataqr,200);
+       }else if($qrpendataan){
+            return response()->json($qrpendataan,200);
+       }else{
+        return response()->json('Not Found',404);
+       }
     }
 }

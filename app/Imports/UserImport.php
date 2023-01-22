@@ -8,8 +8,10 @@ use illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\Importable;
+use Maatwebsite\Excel\Concerns\SkipsOnError;
+use Maatwebsite\Excel\Concerns\WithValidation;
 
-class UserImport implements ToModel
+class UserImport implements ToModel, WithValidation
 {
     /**
     * @param array $row
@@ -17,6 +19,7 @@ class UserImport implements ToModel
     * @return \Illuminate\Database\Eloquent\Model|null
     */
     use Importable;
+
     public function model(array $row)
     {
         return new User([
@@ -31,5 +34,13 @@ class UserImport implements ToModel
         'role'=>$row[8],
         'password'=>Hash::make($row[9]),
         ]);
+    }
+    public function rules(): array
+    {
+        return[
+            '*.1'=>['required','unique:users,name'],
+            '*.2'=>['required','unique:users,username'],
+            '*.3'=>['email','unique:users,email'],
+        ];
     }
 }
