@@ -5,14 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\kelas;
 use App\Models\Regency;
+use App\Http\Controllers;
 use App\Exports\UserExport;
+use App\Imports\UserImport;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Controllers;
-use App\Imports\UserImport;
-use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
-use Termwind\Components\Dd;
 
 class dashboardUserController extends Controller
 {
@@ -61,6 +60,7 @@ class dashboardUserController extends Controller
         ]);
         $validated['password']= Hash::make($validated['password']);
         $validated['email_verified_at']=date('Y-m-d H:i:s');
+        $validated['uuid']=Str::uuid();
         $setor=User::create($validated);
         if ($setor) {
             return redirect(route('userlist.index'))->with('success','User Berhasil Ditambahkan');

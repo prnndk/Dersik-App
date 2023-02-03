@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use App\Models\siswa;
 use App\Models\pemilih;
 use App\Models\Informasi;
@@ -14,6 +15,8 @@ use App\Http\Controllers\StatusController;
 use App\Http\Controllers\PemilihController;
 use App\Http\Controllers\AngkatanController;
 use App\Http\Controllers\DashlinkController;
+use Illuminate\Support\Facades\Notification;
+use App\Http\Controllers\BlastMailController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataketuaController;
 use App\Http\Controllers\InformasiController;
@@ -90,6 +93,7 @@ Route::get('/dashboard/informasipembayaran', [RegisPromController::class, 'infob
 Route::get('/dashboard/undangan', [RegisPromController::class, 'undangan'] );
 
 Route::resource('/dashboard/regis-mail',RegisEmailController::class);
+Route::resource('blasting-mail',BlastMailController::class);
 Route::resource('/dashboard/ketua',KetuaController::class);
 Route::resource('/dashboard/angkatan',AngkatanController::class);
 
@@ -115,6 +119,9 @@ Route::controller(PemilihController::class)->group(function(){
 Route::resource('/dashboard/links',DashlinkController::class)->middleware('admin')->except(['create','show']);
 Route::get('api/link',[DashlinkController::class,'apiLink'])->name('apiLink')->middleware('admin');
 Route::get('shortlink',[DashboardController::class,'shortlink'])->name('shortlink');
+// Route::get('testnotif',function(){
+//     Notification::send(User::first(), new \App\Notifications\NotifyBot('test'));
+// });
 }); 
 // end group of auth
     

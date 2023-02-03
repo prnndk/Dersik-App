@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\kelas;
 use App\Models\Angkatan;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -23,6 +24,7 @@ class DatabaseSeeder extends Seeder
             'username' => 'admin',
             'email' => 'arya@smasa.id',
             'kelas_id'=>'4',
+            'uuid'=>Str::uuid(),
             'tempatlahir'=>'3572',
             'dob'=>"2004-06-04",
             'role'=>"admin",

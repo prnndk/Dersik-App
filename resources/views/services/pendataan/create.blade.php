@@ -7,6 +7,15 @@
                 <h4>Form Pendataan</h4>
             </div>
         <div class="card-body">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <form action="{{ route('pendataan.store') }}" id="form" role="form" method="post" autocomplete="off">
             @csrf
             <div class="row">
@@ -191,12 +200,19 @@
                     $('.input-manual').hide()
                 }
             }));
+            console.log($('#teman_smasa').val());
             if($("#teman_smasa").change(function () { 
                 if ($(this).prop('checked')) {
                     $('#block_banyak_teman').show()
+                    $('#teman_smasa').val('Ada')
+                    let valuas=$('#teman_smasa').val()
+                    console.log(valuas);
                     $('#banyak_teman').attr('required',true)
                 }else{
                     $('#block_banyak_teman').hide()
+                    $('#teman_smasa').val('Tidak Ada')
+                    let valuas=$('#teman_smasa').val()
+                    console.log(valuas);
                     $('#banyak_teman').attr('required',false)
                 }
             }));

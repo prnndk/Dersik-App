@@ -2,16 +2,16 @@
 
 namespace App\Imports;
 
-use App\Models\User;
 use Carbon\Carbon;
+use App\Models\User;
+use Illuminate\Support\Str;
 use illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\Importable;
-use Maatwebsite\Excel\Concerns\SkipsOnError;
-use Maatwebsite\Excel\Concerns\WithValidation;
 
-class UserImport implements ToModel, WithValidation
+
+class UserImport implements ToModel
 {
     /**
     * @param array $row
@@ -24,6 +24,7 @@ class UserImport implements ToModel, WithValidation
     {
         return new User([
         'id'=>$row[0],
+        'uuid'=>Str::uuid(),
         'name'=>$row[1],
         'username'=>$row[2],
         'email'=>$row[3],
@@ -34,13 +35,5 @@ class UserImport implements ToModel, WithValidation
         'role'=>$row[8],
         'password'=>Hash::make($row[9]),
         ]);
-    }
-    public function rules(): array
-    {
-        return[
-            '*.1'=>['required','unique:users,name'],
-            '*.2'=>['required','unique:users,username'],
-            '*.3'=>['email','unique:users,email'],
-        ];
     }
 }

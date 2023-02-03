@@ -10,10 +10,12 @@ use App\Models\Regency;
 use App\Models\Angkatan;
 use App\Mail\PendataanMail;
 use Illuminate\Support\Str;
+use Termwind\Components\Dd;
 use App\Models\detailstatus;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Mail\ReviewPendataanMail;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\StoresiswaRequest;
 use App\Http\Requests\UpdatesiswaRequest;
@@ -78,12 +80,15 @@ class SiswaController extends Controller
         if ($request->instansi==null&&(in_array($request->status,[3,5]))) {
             $validated['instansi']='Gapyear/Menikah';
         }
-        if($validated['instansi']){
+        if($validated['instansi']!='Gapyear/Menikah'){
             $get=detailstatus::where('id',$validated['instansi'])->first();
             $validated['instansi']=$get->nama;
         }
         if($request->instansi==null&&$request->instansi_manual){
             $validated['instansi']=$validated['instansi_manual'];
+        }
+        if($request->teman_smasa==NULL){
+            $validated['teman_smasa']='Tidak Ada';
         }
         if(auth()->user()){
             if(auth()->user()->role == 'User'){
@@ -125,13 +130,8 @@ class SiswaController extends Controller
         if($request->instansi==null&&$request->instansi_manual){
             $validated['instansi']=$validated['instansi_manual'];
         }
-        if(auth()->user()){
-            $cek=siswa::where('user_id',auth()->user()->id)->first();
-            if($cek){
-                return back()->with('info','Anda sudah melakukan pendataan, silahkan edit data anda jika ada kesalahan');
-            }else{
-                $validated['user_id']=auth()->user()->id;
-            }
+        if($request->user_id){
+            $validated['user_id']=$request->user_id;
         }else{
             $validated['user_id']=null;
         }
@@ -157,9 +157,13 @@ class SiswaController extends Controller
     {
         $siswa=siswa::where('url',$url)->first();
         if($siswa){
-        return view('services.pendataan.view',[
-            'data'=>$siswa,
-        ]);
+            if($siswa->user_id!=auth()->user()->id&&auth()->user()->role=='User'){
+                return redirect(route('pendataan.index'))->with('toast_error','Permission Denied');
+            }else{
+                return view('services.pendataan.view',[
+                    'data'=>$siswa,
+                ]);
+            }
         }else{
             return redirect(route('pendataan.index'))->with('toast_error','Data Tidak Ditemukan');
         }
@@ -173,7 +177,8 @@ class SiswaController extends Controller
      */
     public function edit($url)
     {
-        $siswa=Siswa::where('url',$url)->first();
+        $siswa=siswa::where('url',$url)->first();
+        if($siswa){
         return view('services.pendataan.edit',[
             'data'=>$siswa,
             'kelas'=>kelas::all(),
@@ -182,6 +187,9 @@ class SiswaController extends Controller
             'status'=>status::all(),
             'instansi'=>detailstatus::all(),
         ]);
+        }else{
+            return redirect(route('pendataan.index'))->with('toast_error','Data Tidak Ditemukan');
+        }   
     }
 
     /**
@@ -216,7 +224,7 @@ class SiswaController extends Controller
         if ($upload){
             return redirect(route('pendataan.index'))->with('success','Data Berhasil Diupdate');
         } else {
-            return redirect(route('pendataan.index'))->with('toast_error');
+            return redirect(route('pendataan.index'))->with('toast_error','Terjadi kesalahan saat update data');
         }
     }
 
@@ -253,8 +261,13 @@ class SiswaController extends Controller
     public function cekpendataan($url)
     {
         $siswa=siswa::where('url',$url)->first();
-        return view('services.pendataan.cek',[
-            'datum'=>$siswa
-        ]);
+        if($siswa)
+        {
+            return view('services.pendataan.cek',[
+                'data'=>$siswa
+            ]);
+        }else{
+            abort(404);
+        }
     }
 }

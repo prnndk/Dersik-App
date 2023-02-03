@@ -30,11 +30,11 @@ class StoresiswaRequest extends FormRequest
             'email'=>'required|unique:siswas|email:dns',
             'kelas'=>'required|numeric',
             'status'=>'required|numeric',
-            'instansi'=>'required_if:tidak_ada,off&required_if:status,=,[1,2,4]',
+            'instansi'=>'required_if:tidak_ada,off&&required_if:status,[1,2,4]',
             'instansi_manual'=>'required_if:tidak_ada,on',
+            'teman_smasa'=>'in:Ada,Tidak Ada',
             'detail_status'=>'required|string',
             'domisili'=>'required|numeric',
-            'teman_smasa'=>'required',
             'banyak_teman'=>'required_if:teman_smasa,Ada|nullable|numeric',
             'angkatan_id'=>'required|numeric',
             'nomor'=>'required|digits_between:10,13|unique:siswas'

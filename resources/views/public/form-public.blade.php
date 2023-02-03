@@ -1,18 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Form Pendataan | DERSIK 22</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <link rel="stylesheet" href="{{ url('css/style.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
-    <script src="/js/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
-<body>
+@extends('layouts.tailpub')
+@section('title', 'Form Pendataan Dersik 22')
+@section('content')
 <section class="bg-gray-200 min-h-screen flex items-center justify-center p-5">
     <div class="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow-md sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
     <form class="space-y-6" autocomplete="off" id="form">
@@ -116,7 +104,8 @@
     </form>
     </div>
 </section>
-</body>
+@endsection
+@section('script')
 <script>
     $(document).ready(function () {
         Swal.fire({
@@ -251,4 +240,4 @@
 
     });
 </script>
-</html>
+@endsection

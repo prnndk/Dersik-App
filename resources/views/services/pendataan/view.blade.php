@@ -8,7 +8,7 @@
             <div class="card-header-action">
                 <span class="badge badge-primary">{{ $data->angkat->nama }}</span>
                 @if($data->pengajuan==0)<span class="badge badge-info">Pengajuan baru</span>@elseif($data->pengajuan==1) <span class="badge badge-info">Pengajuan ulang</span> @endif
-                <a href="{{ route('pendataan.edit',$data->id) }}" class="btn btn-icon btn-warning "><i class="fas fa-pencil"></i></a>
+                <a href="{{ route('pendataan.edit',$data->url) }}" class="btn btn-icon btn-warning "><i class="fas fa-pencil"></i></a>
             </div>
         </div>
         <div class="card-body">

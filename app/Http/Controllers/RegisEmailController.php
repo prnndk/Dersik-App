@@ -95,11 +95,7 @@ class RegisEmailController extends Controller
      */
     public function update(UpdateregisEmailRequest $request, $id)
     {
-        $regismail=regisEmail::where('id',$id)->get();
-        // dd($regismail);
-        foreach ($regismail as $mail) {
-            # code...
-        }
+        $mail=regisEmail::where('id',$id)->first();
         $rules=[
             'nama'=>'required',
             'username'=>'required',
@@ -131,8 +127,9 @@ class RegisEmailController extends Controller
      */
     public function destroy($id)
     {
-        $mail=regisEmail::where('id',$id)->get();
+        $mail=regisEmail::where('id',$id)->first();
         regisEmail::destroy($mail);
         return redirect ('/dashboard/regis-mail')->with('success','Data has been deleted');
     }
+
 }
