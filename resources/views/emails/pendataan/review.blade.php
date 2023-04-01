@@ -2,7 +2,7 @@
 
 # Terjadi update pada pendataanmu
 
-Dari perubahan yang telah dilakukan, terdapat perubahan. Cek pada tombol di bawah ini.
+Dari peninjauan data yang telah dilakukan, terdapat perubahan pada pendataan anda. Cek pada tombol di bawah ini.
 
 <x-mail::button :url="$link">
 Cek Pendataanmu

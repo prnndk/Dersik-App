@@ -9,7 +9,7 @@ Pendataan sudah terdata di sistem kami. Tunggu hingga data anda telah disetujui 
 | {{ $nama }}    | {{ $kelas }}  | {{ $status }} |{{ $instansi }}|{{ $detail }}  | 0{{ $nomor }}  | {{ $domisili }}|
 </x-mail::table>
 
-Terimakasih partisipasi anda untuk melakukan pendataan
+Terimakasih atas partisipasi anda untuk mengisi pendataan
 
 With 💙 DERSIK 22
 
