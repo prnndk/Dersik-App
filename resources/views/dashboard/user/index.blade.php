@@ -41,13 +41,9 @@
                     <td>No Data</td>
                    @endif
                    <td>
-                    <a href="/userlist/{{$list->id}}" class="badge badge-info mt-1"><i class="far fa-eye"></i></a>
-                    <a href="/userlist/{{ $list->id }}/edit" class="badge badge-warning mt-1"><i class="far fa-edit"></i></a>
-                    <form action="/userlist/{{ $list->id }}" method="post" class="d-inline">
-                        @method('delete')
-                        @csrf
-                        <button class="badge badge-danger mt-1 border-0" onclick="return confirm('Delete data?')"><i class="far fa-trash-alt"></i></button>
-                    </form>
+                    <a href="/userlist/{{$list->uuid}}" class="badge badge-info mt-1"><i class="far fa-eye"></i></a>
+                    <a href="/userlist/{{ $list->uuid }}/edit" class="badge badge-warning mt-1"><i class="far fa-edit"></i></a>
+                    <button class="badge badge-danger mt-1 border-0 delete" data-id="{{ $list->uuid }}"><i class="far fa-trash-alt"></i></button>
                   </td>
                   </tr>
                   @endforeach
@@ -109,6 +105,36 @@
         $('#modalSubmit').addClass('btn-progress');
         $('#modalSubmit').attr('disabled',true);
         $('#formSubmit').submit()
+    });
+    //delete function
+    $('.delete').click(function (e) { 
+        e.preventDefault();
+        var id = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You will delete this data!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#6777ef',
+            cancelButtonColor: '#fc544b',
+            confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url:"userlist/"+id,
+                    type: "DELETE",
+                     data: {
+                          '_token' : '{{ csrf_token() }}',
+                     }
+                });
+                Swal.fire(
+                'Deleted!',
+                'User has been deleted.',
+                'success'
+                )
+                location.reload();
+            }
+        })
     });
 </script>
 @endsection

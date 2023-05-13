@@ -45,9 +45,31 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="form-group col-md-4">
+                    <label for="informasi_type">Pilih Tipe Tayangan Informasi</label>
+                    <select class="form-control select2" name="informasi_type" id="informasi_type">
+                        <option value="" disabled selected>-Pilih Tipe Tayangan Informasi-</option>
+                        <option value="1">Modal</option>
+                        <option value="2">Feed</option>
+                        <option value="3">Email Blasting</option>
+                        <option value="4">Marquee</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="shortlink">Ingin buat shortlink?</label>
+                    <select class="form-control select2" name="shortlink" id="shortlink">
+                        <option value="" disabled selected>-Pilih-</option>
+                        <option value="1">Ya</option>
+                        <option value="0">Tidak</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="shortened">Shortened Link</label>
+                    <input type="text" class="form-control @error('shortened') is-invalid @enderror" id="shortened" name="shortened" value="{{ old('shortened') }}">
+                </div>
                 <div class="form-group col-md-8">
                     <label for="img" class="form-label">Foto</label>
-                    <img class="img-preview img-fluid mb-3 col-sm-5">
+                    <img class="img-preview img-fluid mb-3 col-sm-5 rounded-lg">
                     <input class="form-control @error('img') is-invalid @enderror" type="file" accept="image/*" id="img" name="img" onchange="previewImage()">
                     @error('img')
                     <div class="invalid-feedback">
@@ -72,7 +94,7 @@
         function previewImage(){
             const image=document.querySelector('#img');
             const imgPreview=document.querySelector('.img-preview');
-            imgPreview.style.displat='block';
+            imgPreview.style.display='block';
             const oFreader=new FileReader();
             oFreader.readAsDataURL(image.files[0]);
             oFreader.onload=function(oFREvent){

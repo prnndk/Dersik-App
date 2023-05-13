@@ -2,31 +2,32 @@
 
 namespace App\Notifications;
 
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use NotificationChannels\Telegram\TelegramChannel;
+use Illuminate\Notifications\Notification;
 use NotificationChannels\Telegram\TelegramMessage;
 
 class NotifyBot extends Notification
 {
     use Queueable;
+    protected $message;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(string $message)
     {
-        //
+        $this->message = $message;
     }
 
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
+     *
      * @return array
      */
     public function via($notifiable)
@@ -37,7 +38,8 @@ class NotifyBot extends Notification
     /**
      * Get the mail representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
+     *
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     // public function toMail($notifiable)
@@ -48,22 +50,25 @@ class NotifyBot extends Notification
     //                 ->line('Thank you for using our application!');
     // }
 
-    public function toTelegram($notifiable)
+    public function toTelegram()
     {
         return TelegramMessage::create()
             ->to('-856487141')
-            ->content("Testing Telegram Notification");
+            ->line('‼️ *New Admin Notification* ‼️')
+            ->line($this->message)
+            ->line('Server Log Time '.Carbon::now());
     }
+
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
+     *
      * @return array
      */
     public function toArray($notifiable)
     {
         return [
-            //
         ];
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\kelas;
 use App\Models\Angkatan;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StorekelasRequest;
 use App\Http\Requests\UpdatekelasRequest;
@@ -50,12 +51,12 @@ class KelasController extends Controller
     public function store(StorekelasRequest $request)
     {
         $ValidatedData=$request->validate([
-            'kelas'=>'required',
-            'nama'=>'required|unique:kelas',
+            'kelas'=>'required|string|max:100',    
+            'id_angkatan'=>'required|exists:angkatans,id',
+            'nama'=>'required|unique:kelas|max:100',
             'instagram'=>'required|unique:kelas',
-            'id_angkatan'=>'required',
             'jumlah'=>'digits:2|required',
-            'fotbar'=>'image|file|required|mimes:png,jpg,svg'
+            'fotbar'=>'image|file|mimes:png,jpg,svg|max:2048'
         ]);
         if ($request->file('fotbar')) {
             $ValidatedData['fotbar']=$request->file('fotbar')->store('app-image');
@@ -152,5 +153,18 @@ class KelasController extends Controller
         }
         kelas::destroy($ok->id);
         return redirect(route('kelas.index'))->with('success','Data Kelas Berhasil Dihapus');
+    }
+
+    public function getByAngkatan(Request $request)
+    {
+        $request->validate([
+            'id'=>'required|exists:angkatans,id'
+        ]);
+        $angkatan = $request->id;
+        $kelas = kelas::where('id_angkatan',$angkatan)->get();
+        return response()->json([
+            'success'=>true,
+            'kelas'=>$kelas
+        ],200);
     }
 }

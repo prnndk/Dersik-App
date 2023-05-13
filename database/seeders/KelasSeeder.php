@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\kelas;
 use Illuminate\Database\Seeder;
 
 class KelasSeeder extends Seeder
@@ -14,6 +14,12 @@ class KelasSeeder extends Seeder
      */
     public function run()
     {
-        //
+        kelas::create([
+            'kelas' => 'MIPA 1',
+            'id_angkatan' => '1',
+            'nama' => 'ximaja',
+            'instagram' => '@ximaja',
+            'jumlah' => 34,
+        ]);
     }
 }

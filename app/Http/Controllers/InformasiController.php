@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Angkatan;
-use App\Models\Informasi;
 use App\Http\Requests\StoreInformasiRequest;
 use App\Http\Requests\UpdateInformasiRequest;
+use App\Models\Angkatan;
+use App\Models\Informasi;
 use App\Models\kateginfo;
+use App\Models\Shortlink;
+use App\Models\User;
+use App\Notifications\NotifyBot;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
 
 class InformasiController extends Controller
 {
@@ -17,8 +23,8 @@ class InformasiController extends Controller
      */
     public function index()
     {
-        return view('services.info.index',[
-            'info'=>Informasi::with(['kateginfo','angkat','user'])->get(),
+        return view('services.info.index', [
+            'info' => Informasi::with(['kateginfo', 'angkat', 'user'])->latest()->get(),
         ]);
     }
 
@@ -29,80 +35,95 @@ class InformasiController extends Controller
      */
     public function create()
     {
-        if(auth()->user()->role=='User'){
-            return redirect(route('informasi.index'))->with('warning','Anda Tidak Punya Akses untuk halaman ini');
+        if (auth()->user()->role == 'User') {
+            return redirect(route('informasi.index'))->with('warning', 'Anda Tidak Punya Akses untuk halaman ini');
         }
-        return view('services.info.create',[
-            'kategori'=>kateginfo::all(),
-            'angkatan'=>Angkatan::all(),
+
+        return view('services.info.create', [
+            'kategori' => kateginfo::all(),
+            'angkatan' => Angkatan::all(),
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreInformasiRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreInformasiRequest $request)
     {
-        $validateData=$request->validate([
-           'judul'=>'required|min:5',
-            'kategori_informasi'=>'required',
-            'angkatan'=>'required',
-            'img'=>'required|file|image|mimes:png,jpg,svg',
-            'body'=>'required'
+        $validateData = $request->validate([
+           'judul' => 'required|min:5',
+            'kategori_informasi' => 'required',
+            'angkatan' => 'required',
+            'img' => 'required|file|image|mimes:png,jpg,svg',
+            'body' => 'required',
+            'informasi_type' => 'required|numeric',
+            'shortlink' => 'required|boolean',
+            'shortened' => 'required_if:shortlink,true|string|alpha_dash|min:3',
         ]);
         if ($request->file('img')) {
-            $validateData['img']=$request->file('img')->store('app-image');
+            $validateData['img'] = $request->file('img')->store('app-image');
         }
-        $validateData['oleh']=auth()->user()->id;
-        Informasi::create($validateData);
-        return redirect(route('informasi.index'))->with('success','Berhasil Menambahkan Informasi Baru');
+        $validateData['slug'] = Str::slug($validateData['judul']);
+        $validateData['active'] = true;
+
+        $validateData['oleh'] = auth()->user()->id;
+        DB::beginTransaction();
+        try {
+            if ($validateData['shortlink']) {
+                Shortlink::create([
+                    'shortened' => $validateData['shortened'],
+                    'original' => route('informasi.show', $validateData['slug']),
+                    'oleh' => auth()->user()->id,
+                    'active' => true,
+                ]);
+            }
+            Informasi::create($validateData);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+        DB::commit();
+        Notification::send(User::first(), new NotifyBot('Informasi baru telah dibuat oleh '.auth()->user()->name));
+        
+        return redirect(route('informasi.index'))->with('success', 'Berhasil Menambahkan Informasi Baru');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Informasi  $informasi
      * @return \Illuminate\Http\Response
      */
     public function show(Informasi $informasi)
     {
-        //
+        return $informasi;
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Informasi  $informasi
      * @return \Illuminate\Http\Response
      */
     public function edit(Informasi $informasi)
     {
-        //
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateInformasiRequest  $request
-     * @param  \App\Models\Informasi  $informasi
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateInformasiRequest $request, Informasi $informasi)
     {
-        //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Informasi  $informasi
      * @return \Illuminate\Http\Response
      */
     public function destroy(Informasi $informasi)
     {
-        //
     }
 }

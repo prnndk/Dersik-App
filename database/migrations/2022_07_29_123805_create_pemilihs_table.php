@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      *
@@ -15,10 +14,10 @@ return new class extends Migration
     {
         Schema::create('pemilihs', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->foreignId('user_id')->constrained('users','id')->onDelete('cascade');
             $table->string('token')->length(10);
             $table->integer('status_pilih');
-            $table->integer('vote_id');
+            $table->foreignId('vote_id')->constrained('votes','id')->onDelete('cascade');
             $table->timestamps();
         });
     }

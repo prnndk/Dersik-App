@@ -17,6 +17,10 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
     public function kelas()
     {
         return $this->belongsTo(kelas::class,'kelas_id');
@@ -58,6 +62,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'username',
         'kelas_id',
+        'angkatan_id',
         'tempatlahir',
         'role',
         'dob',

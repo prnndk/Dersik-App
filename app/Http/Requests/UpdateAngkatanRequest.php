@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateAngkatanRequest extends FormRequest
 {
@@ -25,7 +25,13 @@ class UpdateAngkatanRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            // 'nama' => 'required|min:3|unique:angkatans,nama',
+            // 'email' => 'required|email:dns|unique:angkatans',
+            // 'tahun' => 'required|digits:4|unique:angkatans',
+            // 'ig' => 'required|unique:angkatans',
+            // 'ketua' => 'nullable|unique:angkatans|min:5',
+            // 'logo' => 'nullable|file|mimes:png,jpg,svg',
+            // 'filosofi' => 'nullable|min:10',
         ];
     }
 }

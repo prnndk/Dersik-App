@@ -8,17 +8,25 @@ use Illuminate\Database\Eloquent\Model;
 class Informasi extends Model
 {
     use HasFactory;
-    protected $guarded=['id'];
+    protected $guarded = ['id'];
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     public function kateginfo()
     {
-        return $this->belongsTo(kateginfo::class,'kategori_informasi');
+        return $this->belongsTo(kateginfo::class, 'kategori_informasi');
     }
+
     public function user()
     {
-        return $this->belongsTo(User::class,'oleh');
+        return $this->belongsTo(User::class, 'oleh');
     }
+
     public function angkat()
     {
-        return $this->belongsTo(Angkatan::class,'angkatan');
+        return $this->belongsTo(Angkatan::class, 'angkatan');
     }
 }

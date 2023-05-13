@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      *
@@ -13,13 +12,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('votes', function (Blueprint $table) {
+        Schema::create('domainlists', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->string('link');
-            $table->integer('angkatan_id');
-            $table->dateTime('mulai_coblos');
-            $table->dateTime('akhir_coblos');
+            $table->string('name');
+            $table->string('email');
+            $table->string('pj');
+            $table->foreignId('angkatan_id')->constrained('kelas','id')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('votes');
+        Schema::dropIfExists('domainlists');
     }
 };

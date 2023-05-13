@@ -39,16 +39,22 @@
             </div>
             {{-- kelas --}}
             <div class="form-group col-md-4">
-                <label for='kelas_id'>Pilih Kelas</label>
-                <select class="form-control select2" name='kelas_id' required>
-                        <option value="" disabled selected>-Pilih Kelas-</option>
-                        @foreach ($kelas as $list)
-                        @if (old('kelas_id')==$list->id)
-                        <option value="{{ $list->id }}" selected>{{ $list->kelas }}</option>
+                <label for='angkatan_id'>Pilih Angkatan</label>
+                <select class="form-control select2" name='angkatan_id' id="angkatan_id">
+                    <option value="" disabled selected>-Pilih Angkatan-</option>
+                    @foreach ($angkatans as $angkatan)
+                        @if (old('angkatan_id')==$angkatan->id)
+                            <option value="{{ $angkatan->id }}" selected>{{ $angkatan->nama .'/'. $angkatan->tahun}}</option>
                         @else
-                        <option value="{{ $list->id }}">{{ $list->kelas }}</option>
+                            <option value="{{ $angkatan->id }}">{{ $angkatan->nama .'/'. $angkatan->tahun}}</option>
                         @endif
-                        @endforeach
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <label for='kelas_id'>Pilih Kelas</label>
+                <select class="form-control select2" name='kelas_id' id="kelas_id">
+                    
                 </select>
             </div>
             {{-- tempatlahir --}}
@@ -103,8 +109,23 @@
 @endsection
 @section('customjs')
     <script>
-        // $("#tempatlahir").select2({
-        //     placeholder: "Pilih Tempat Lahir",
-        // });
+        $("#angkatan_id").change(function(e){
+            e.preventDefault();
+            var angkatan_id = $(this).val();
+            $.ajax({
+                url: "/api/kelasByAngkatan",
+                type: "GET",
+                data: {
+                    id: angkatan_id
+                },
+                success: function(data){
+                    $('#kelas_id').empty();
+                    $('#kelas_id').append('<option value="" disabled selected>-Pilih Kelas-</option>');
+                    $.each(data.kelas, function(index, value){
+                        $('#kelas_id').append('<option value="'+value.id+'">'+value.nama+' / '+value.kelas+'</option>');
+                    });
+                }
+            });
+        })
     </script>
 @endsection

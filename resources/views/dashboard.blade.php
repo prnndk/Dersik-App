@@ -190,15 +190,11 @@
           <h4>Quick Link</h4>
         </div>
       <div class="card-body">
+        @foreach ($button as $btn )
         <div class="btn-group m-1">
-          <a href="/dashboard/regis-mail" class="btn btn-primary">Regis Email</a>
+          <a href="{{ $btn->route }}" class="btn btn-primary"><i class="{{ $btn->icon }}"></i> {{ $btn->nama }}</a>
         </div>
-        <div class="btn-group m-1">
-          <a href="/dashboard/ketua" class="btn btn-primary">Data Ketua</a>
-        </div>
-        <div class="btn-group m-1">
-          <a href="/dashboard/angkatan" class="btn btn-primary">Data Angkatan</a>
-        </div>
+        @endforeach
       </div>
     </div>
   </div>

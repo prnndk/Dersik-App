@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      *
@@ -18,11 +17,11 @@ return new class extends Migration
             $table->string('name');
             $table->string('icon');
             $table->string('url');
-            $table->string('is_parent');
+            $table->boolean('is_parent');
             $table->integer('parent')->nullable();
             $table->string('order');
             $table->string('permission');
-            $table->integer('active');
+            $table->boolean('active');
             $table->timestamps();
         });
     }

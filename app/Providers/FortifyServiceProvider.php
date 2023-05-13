@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\kelas;
+use App\Models\Regency;
+use App\Models\Angkatan;
 use Illuminate\Http\Request;
 use Laravel\Fortify\Fortify;
 use App\Actions\Fortify\CreateNewUser;
@@ -12,7 +14,6 @@ use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use Illuminate\Support\Facades\RateLimiter;
 use App\Actions\Fortify\UpdateUserProfileInformation;
-use App\Models\Regency;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -23,7 +24,6 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
     }
 
     /**
@@ -37,10 +37,11 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
-        Fortify::registerView(function(){
-            $kelas=kelas::all();
-            $kota=Regency::all();
-            return view('auth.register',['kelas'=>$kelas,'kota'=>$kota]);
+        Fortify::registerView(function () {
+            $kelas = kelas::all();
+            $kota = Regency::all();
+            $angkatans = Angkatan::all();
+            return view('auth.new-register', ['kelas' => $kelas, 'cities' => $kota,'angkatans'=>$angkatans]);
         });
 
         RateLimiter::for('login', function (Request $request) {
