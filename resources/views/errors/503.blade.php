@@ -16,7 +16,7 @@
     <i class="tutor bi bi-toggle2-on"></i>
   <div>
     <h5 class="mb-0 ">Under Maintenance Mode</h5>
-    Or this website is under maintenance by owner
+    This website is under maintenance by owner
 </div>
 </li>
 @endsection

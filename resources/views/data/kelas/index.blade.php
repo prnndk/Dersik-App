@@ -38,16 +38,40 @@
                     <form action="/dashboard/kelas/{{ $list->id }}" method="post" class="d-inline">
                         @method('delete')
                         @csrf
-                        <button class="badge badge-danger mt-1 border-0" onclick="return confirm('Delete data?')"><i class="far fa-trash-alt"></i></button>
+                        <button class="badge badge-danger mt-1 border-0 deleteButton" id="delete" type="submit" data-name='{{ $list->nama }}'><i class="far fa-trash-alt"></i></button>
                     </form>
-                       @endif
-                  </td>
-                  </tr>
-                  @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
+                    @endif
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+</div>
 @endsection
 @section('customjs')
+<script>
+    $(document).ready(function() {
+        $('.deleteButton').click(function (e) { 
+            e.preventDefault();
+            var name = $(this).attr('data-name');
+            var form = $(this).closest("form");
+            Swal.fire({
+                title:'Apakah Anda Yakin?',
+                text:'Anda akan melakukan penghapusan pada kelas '+name+' Beserta dengan seluruh user yang terkait',
+                icon:"warning",
+                confirmButtonText:'Ya, Hapuskan',
+                showCancelButton:true,
+                confirmButtonColor:'#d33',
+            }).then((result)=>{
+                if(result.isConfirmed){
+                    Swal.fire('Deleting!','Deleting your data','info')
+                    form.submit();
+                }else{
+                    Swal.fire('Cancelled!','Your data is safe','success')
+                }
+            })
+        });
+    });
+</script>
 @endsection

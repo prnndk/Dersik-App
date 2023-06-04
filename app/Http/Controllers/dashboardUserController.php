@@ -74,6 +74,7 @@ class dashboardUserController extends Controller
             return redirect(route('userlist.index'))->with('warning', 'Terjadi Kesalahan data gagal ditambahkan. Pesan: '.$e);
         }
         DB::commit();
+        $this->notifyBot('User baru telah dibuat oleh *'.auth()->user()->name.'* dengan nama '.$validated['name'].' dan role '.$validated['role']);
 
         return redirect(route('userlist.index'))->with('success', 'User Berhasil Ditambahkan');
     }

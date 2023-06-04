@@ -14,6 +14,7 @@ class DashboardController extends Controller
     public function index()
     {
         return view('index', [
+            'buttons'=>dashlink::where('active', true)->where('location','2')->get(),
         ]);
     }
 
@@ -56,7 +57,7 @@ class DashboardController extends Controller
             'gambar' => $banner,
             'icon' => $icon,
             'text' => $text,
-            'button' => dashlink::where('informasi', 'Y')->get(),
+            'button' => dashlink::where('active', true)->where('location','1')->get(),
         ]);
     }
 

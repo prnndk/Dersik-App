@@ -5,17 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoredashlinkRequest;
 use App\Http\Requests\UpdatedashlinkRequest;
 use App\Models\dashlink;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class DashlinkController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
-    public function index()
+    public function index() : View
     {
         return view('dashboard.dashlinks.index', [
             'data' => dashlink::all(),
@@ -45,14 +47,20 @@ class DashlinkController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoredashlinkRequest $request)
+    public function store(StoredashlinkRequest $request): JsonResponse
     {
         $validated = $request->validated();
         if ($validated) {
+            DB::beginTransaction();
+            try {
             dashlink::create($validated);
-
+            }catch (\Throwable $th) {
+                DB::rollback();
+                throw $th;
+            }
+            DB::commit();
             return response()->json([
                 'status' => 200,
                 'success' => 'Data Added successfully.',

@@ -21,9 +21,7 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TempatstatusController;
 use App\Http\Controllers\UserdataQRController;
-use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,9 +36,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [DashboardController::class, 'index']);
-Route::get('/maintenance', function () {
-    return view('maintenance');
-});
 Route::get('/korwil', [DashboardController::class, 'korwil']);
 Route::get('pendataan/public', [SiswaController::class, 'publicform'])->name('publicform');
 Route::get('pendataan/cek/{url}', [SiswaController::class, 'cekpendataan'])->name('cekPendataan');
@@ -104,9 +99,6 @@ Route::middleware([
     Route::resource('/dashboard/links', DashlinkController::class)->middleware('admin')->except(['create', 'show']);
     Route::get('api/link', [DashlinkController::class, 'apiLink'])->name('apiLink')->middleware('admin');
     Route::get('shortlink', [DashboardController::class, 'shortlink'])->name('shortlink');
-    // Route::get('testnotif', function () {
-    //     Notification::send(User::first(), new \App\Notifications\NotifyBot('test'));
-    // });
     Route::get('cache_clear', function () {
         Artisan::call('cache:clear');
 

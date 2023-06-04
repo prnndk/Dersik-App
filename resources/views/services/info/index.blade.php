@@ -14,16 +14,16 @@
 <div class="col-12 col-md-4 col-lg-4">
     <div class="card card-primary">
         <div class="card-header">
-            <h4>{{$in->judul}}</h4>
+            <h4>{{Str::title($in->judul)}}</h4>
             <div class="card-header-action">
-                <span class="badge badge-info">{{$in->kateginfo->name}}</span>
+                <span class="badge badge-info badge-sm">{{$in->kateginfo->name}}</span>
             </div>
         </div>
         <img src="{{ asset('storage/'.$in->img) }}" class="mx-auto rounded" height="150" width="300" alt="{{ $in->judul }}">
         <div class="card-body">
             {!! $in->body !!}
             <div class="mt-5">
-                <a href="{{ route('informasi.show',$in->id) }}" class="text-decoration-none">
+                <a href="{{ route('informasi.show',$in->slug) }}" class="text-decoration-none">
                     Detail Informasi...
                 </a>
             </div>

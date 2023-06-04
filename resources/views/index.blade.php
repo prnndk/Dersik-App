@@ -8,24 +8,14 @@
               <div class="card">
                 <div class="card-body">
                 <div class="front-link">
-                  <a href="/dashboard/regis-mail" class="text-decoration-none">
-                    <div class="list">
-                      <div class="list-icon"><i class="fas fa-user"></i></div>
-                      <div class="list-label">Email Smasa</div>
-                    </div>
-                  </a>
-                  <a href="/pendataan" class="text-decoration-none">
-                    <div class="list list">
-                      <div class="list-icon"><i class="fas fa-key"></i></div>
-                      <div class="list-label">Pendataan Alumni</div>
-                    </div>
-                  </a>
-                    <a href="/vote" class="text-decoration-none">
-                        <div class="list">
-                            <div class="list-icon"><i class="fas fa-check-to-slot"></i></div>
-                            <div class="list-label">e-voting</div>
+                    @foreach($buttons as $button)
+                     <a href="{{$button->route}}" class="text-decoration-none" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{$button->informasi}}">
+                        <div class="list" >
+                            <div class="list-icon"><i class="{{$button->icon}}"></i></div>
+                            <div class="list-label">{{$button->nama}}</div>
                         </div>
                     </a>
+                    @endforeach
                   </div>
                 </div>
               </div>

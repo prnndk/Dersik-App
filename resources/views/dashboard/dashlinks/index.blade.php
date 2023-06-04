@@ -26,7 +26,7 @@
                     <td>{{ $link->route }}</td>
                     <td>{{ $link->icon }}</td>
                     <td>{{ $link->btn_color }}</td>
-                    <td>@if ($link->informasi == 'Y')
+                    <td>@if ($link->active)
                         <div class="badge badge-success">Aktif</div>
                         @else
                         <div class="badge badge-danger">Tidak Aktif</div>
@@ -52,9 +52,9 @@
             </button>
         </div>
         <div class="modal-body">
-            
+
             <ul id="error">
-                
+
             </ul>
             <div class="form-group col-md-12">
                 <label for="nama">Nama Link</label>
@@ -97,16 +97,26 @@
                 </select>
             </div>
             <div class="form-group col-md-12">
-                <label for="informasi">Choose Link Status</label>
-                <select name="informasi" class="form-control selectric" id="informasi">
-                    <option value="" selected disabled>Choose Link Status</option>
-                    @if (old('informasi') == 'Y')
-                        <option value="Y" selected>Aktif</option>
-                    @elseif(old('informasi')== 'N')
-                        <option value="N" selected>Tidak Aktif</option>
+                <label for="informasi">Informasi Link</label>
+                <input type="text" name="informasi" id="informasi" class="form-control" required value="{{old('informasi')}}">
+            </div>
+            <div class="form-group col-md-12">
+                <div class="form-check">
+                    <input type="checkbox" name="active" id="active" class="form-check-input">
+                    <label for="active" class="form-check-label">Is Active?</label>
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                <label for="location">Choose Link Location</label>
+                <select name="location" class="form-control selectric" id="location">
+                    <option value="" selected disabled>Choose Link Location</option>
+                    @if (old('location') == '1')
+                        <option value="1" selected>Dashboard</option>
+                    @elseif(old('location')== '2')
+                        <option value="2" selected>Front</option>
                     @endif
-                    <option value="Y">Aktif</option>
-                    <option value="N">Tidak Aktif</option>
+                    <option value="1">Dashboard</option>
+                    <option value="2">Front</option>
                 </select>
             </div>
         </div>
@@ -126,9 +136,9 @@
             </button>
         </div>
         <div class="modal-body">
-            
+
             <ul id="errorEdit">
-                
+
             </ul>
             <div class="form-group col-md-12">
                 <label for="nama">Nama Link</label>
@@ -192,6 +202,9 @@
                         'btn_color' : $('#btn_color').val(),
                         'informasi' : $('#informasi').val(),
                         'icon' : $('#icon').val(),
+                        'location' : $('#location').val(),
+                        'active': //value of checkbox if checked == true else false
+                        $('#active').is(":checked") ? 1 : 0,
                     },
                     dataType: "JSON",
                     success: function (response) {
@@ -201,13 +214,15 @@
                         $('#btn_color').val('');
                         $('#informasi').val('');
                         $('#icon').val('');
+                        $('#location').val('');
                         Swal.fire({
                             icon: 'success',
                             title: 'Success',
                             text: 'Dashboard Link has been added',
                         });
                     },
-                    error:function (xhr) { 
+                    error:function (xhr) {
+                        $('#error').empty();
                         var res = xhr.responseJSON;
                         if ($.isEmptyObject(res) == false) {
                             $.each(res.errors, function (key, value) {

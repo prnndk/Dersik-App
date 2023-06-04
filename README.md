@@ -1,5 +1,5 @@
 ## Tentang Aplikasi
-    Suatu website untuk Dersik SMASA 22, yang berisi pendataan alumni, e-voting, dan informasi tentang Angkatan.
+    Sebuah website untuk Angkatan di SMA yang bernama Dersik 22, berisi pendataan alumni, e-voting, dan informasi tentang Angkatan.
 
 ## Fitur Aplikasi
     -Register dan Login
@@ -10,5 +10,10 @@
     -Database kelas, angkatan, koordinator perwilayah
 
 ## Cara run
-    Lakukan php artisan migrate
+    Lakukan Composer Install
+    Copy .env.example ke .env
+    Lakukan php artisan key:generate
+    Buat database
+    Lakukan php artisan migrate --seed
+    Lakukan php artisan serve
     default user = admin password = password

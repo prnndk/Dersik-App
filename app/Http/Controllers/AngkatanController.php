@@ -50,7 +50,7 @@ class AngkatanController extends Controller
             'ig' => 'required|unique:angkatans',
             'ketua' => 'unique:angkatans|min:5',
             'logo' => 'image|file|mimes:png,jpg,svg',
-            'filosofi'=>'max:255'
+            'filosofi' => 'max:255',
         ]);
         if ($request->file('logo')) {
             $validatedData['logo'] = $request->file('logo')->store('app-image');
@@ -136,10 +136,11 @@ class AngkatanController extends Controller
      */
     public function destroy(Angkatan $angkatan)
     {
+        $this->notifyBot('Angkatan '.$angkatan->nama.' Akan Dihapus oleh '.auth()->user()->name);
         if ($angkatan->logo) {
             Storage::delete($angkatan->logo);
         }
-        Angkatan::destroy($angkatan->id);
+        $angkatan->delete();
 
         return redirect(route('angkatan.index'))->with('success', 'Berhasil delete data');
     }

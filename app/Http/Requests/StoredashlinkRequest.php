@@ -29,7 +29,9 @@ class StoredashlinkRequest extends FormRequest
             'route' => 'required|string|unique:dashlinks',
             'icon' => 'required|string',
             'btn_color' => 'required|string',
-            'informasi'=>'required|max:2'
+            'informasi'=>'required|string',
+            'location'=>'required|numeric',
+            'active'=>'required|boolean'
         ];
     }
 }

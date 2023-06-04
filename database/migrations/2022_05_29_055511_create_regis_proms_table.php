@@ -22,8 +22,9 @@ return new class() extends Migration {
             $table->boolean('kedinasan');
             $table->date('tanggal')->nullable();
             $table->string('no_hp', 15)->unique();
-            $table->string('qr_code', 40)->unique();
+            $table->string('qr_code', 40)->unique()->nullable();
             $table->string('statusbayar')->default('Belum Bayar');
+            $table->boolean('is_checkin')->default(false);
             $table->timestamps();
         });
     }
