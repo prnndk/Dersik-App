@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      *
@@ -16,7 +15,7 @@ return new class extends Migration
         Schema::create('kelas', function (Blueprint $table) {
             $table->id();
             $table->string('kelas')->length(20);
-            $table->foreignId('id_angkatan');
+            $table->foreignId('id_angkatan')->constrained('angkatans','id')->onDelete('cascade')->index();
             $table->string('nama')->length(50);
             $table->string('instagram')->length(50)->unique();
             $table->integer('jumlah')->length(2);

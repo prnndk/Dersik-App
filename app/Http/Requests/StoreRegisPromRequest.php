@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreRegisPromRequest extends FormRequest
 {
@@ -25,7 +25,13 @@ class StoreRegisPromRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'nama' => 'required|unique:regis_proms',
+            'email' => 'required|unique:regis_proms|email:dns',
+            'kelas_id' => 'required',
+            'kesediaan' => 'required',
+            'kedinasan' => 'required',
+            'tanggal' => 'date|nullable|required_if:kedinasan,==,Ikut',
+            'no_hp' => 'required|digits_between:10,13|unique:regis_proms',
         ];
     }
 }

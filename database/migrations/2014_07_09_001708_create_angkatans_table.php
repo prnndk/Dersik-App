@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      *
@@ -15,11 +14,11 @@ return new class extends Migration
     {
         Schema::create('angkatans', function (Blueprint $table) {
             $table->id();
-            $table->string('nama')->length(120);
+            $table->string('nama', 120);
             $table->integer('tahun')->length(4);
             $table->string('email');
             $table->text('filosofi')->nullable();
-            $table->string('ig')->length(50);
+            $table->string('ig', 50);
             $table->string('ketua')->nullable();
             $table->string('logo')->nullable();
             $table->timestamps();

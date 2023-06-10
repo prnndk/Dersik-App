@@ -3,12 +3,9 @@
   <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+    @include('layouts.meta')
     <title>@yield('webtitle') | DERSIK 22 APP</title>
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
+    
     <!-- General CSS Files -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     {{-- Bootstrap Newest --}}
@@ -20,6 +17,8 @@
     <link rel="stylesheet" href="/stisla/css/components.css">
     <link rel="stylesheet" type="text/css" href="/css/trix.css">
     <link rel="stylesheet" type="text/css" href="/css/selectric.css">
+    {{-- ToastUI CSS --}}
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
     {{--Select2 Css--}}
     <link href="/css/select2.css" rel="stylesheet" />
     {{-- fontawesome kit --}}
@@ -29,6 +28,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     {{--jQuery--}}
     <script src="/js/jquery-3.6.0.min.js"></script>
+    {{-- AlpineJs --}}
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    {{-- Livewire --}}
+    @livewireStyles
 </head>
 <body>
 <div id="app">
@@ -61,7 +64,9 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    @livewireScripts
     <script src="/stisla/js/stisla.js"></script>
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
     <!-- Template JS File -->
     <script src="/stisla/js/scripts.js"></script>
@@ -77,7 +82,10 @@
     {{--Sweet Alert--}}
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    @yield('customjs')
+    {{-- Livewire --}}
+    
+    @yield('customjs')  
+    @stack('scripts')
 <script>
     $(document).ready( function () {
       $('#table').DataTable();

@@ -148,7 +148,7 @@
     <h2 class="section-title">Dersik SMASA 22 Pengumuman</h2>
     <p class="section-lead">Pengumuman terbaru DERSIK 2022</p>
   </div>
-  
+
   {{-- card row --}}
   <div class="row">
     <div class="col-12 col-sm-12 col-lg-6 mt04">
@@ -180,7 +180,7 @@
           </div>
         </div>
         <div class="card-body">
-          
+
         </div>
       </div>
     </div>
@@ -190,15 +190,11 @@
           <h4>Quick Link</h4>
         </div>
       <div class="card-body">
+        @foreach ($button as $btn )
         <div class="btn-group m-1">
-          <a href="/dashboard/regis-mail" class="btn btn-primary">Regis Email</a>
+          <a href="{{ $btn->route }}" class="btn btn-{{Str::lower($btn->btn_color)}}"><i class="{{ $btn->icon }}"></i> {{ $btn->nama }}</a>
         </div>
-        <div class="btn-group m-1">
-          <a href="/dashboard/ketua" class="btn btn-primary">Data Ketua</a>
-        </div>
-        <div class="btn-group m-1">
-          <a href="/dashboard/angkatan" class="btn btn-primary">Data Angkatan</a>
-        </div>
+        @endforeach
       </div>
     </div>
   </div>

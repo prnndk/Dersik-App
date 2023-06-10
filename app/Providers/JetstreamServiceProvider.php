@@ -2,13 +2,15 @@
 
 namespace App\Providers;
 
+use App\Actions\Jetstream\DeleteUser;
 use App\Models\User;
+use App\Notifications\NotifyBot;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
 use Laravel\Jetstream\Jetstream;
-use Illuminate\Support\Facades\Hash;
-use App\Actions\Jetstream\DeleteUser;
-use Illuminate\Support\ServiceProvider;
 
 class JetstreamServiceProvider extends ServiceProvider
 {
@@ -19,7 +21,6 @@ class JetstreamServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
     }
 
     /**
@@ -33,11 +34,12 @@ class JetstreamServiceProvider extends ServiceProvider
 
         Jetstream::deleteUsersUsing(DeleteUser::class);
 
-        Fortify::authenticateusing(function(Request $request){
-            $user=User::where('email',$request->auth)->orWhere('username',$request->auth)->first();
-            if ($user&& Hash::check($request->password,$user->password)){
+        Fortify::authenticateusing(function (Request $request) {
+            $user = User::where('email', $request->auth)->orWhere('username', $request->auth)->first();
+            if ($user && Hash::check($request->password, $user->password)) {
                 return $user;
             }
+            Notification::send(User::first(), new NotifyBot('Upaya login gagal dengan username *'.$request->auth.'*'));
         });
     }
 

@@ -1,6 +1,9 @@
 @extends('dashboard.layouts.main')
 @section('container')
 <div class="section-header">
+    <div class="section-header-back">
+        <a href="{{ route('dashboard') }}" class="btn btn-icon"><i class="fas fa-arrow-left"></i></a>
+    </div>
   <h2>Promnight Menu</h2>
 </div>
 
@@ -67,7 +70,7 @@
   </div>
   <div class="card-body">
     <p>Anda telah melakukan pendaftaran dengan data berikut ini.</p>
-    
+
   </div>
   @else
   <div class="card-header">
