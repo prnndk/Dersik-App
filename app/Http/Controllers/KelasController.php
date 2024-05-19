@@ -90,7 +90,7 @@ class KelasController extends Controller
     public function edit($id)
     {
         if (auth()->user()->role == 'User') {
-            return redirect(route('kelas.index'))->with('warning', 'Role anda tidak bisa edit');
+            return redirect(route('kelas.index'))->with('warning', 'Role anda tidak dapat melakukan edit data');
         }
         $kls = kelas::where('id', $id)->first();
 
@@ -122,18 +122,18 @@ class KelasController extends Controller
         if ($request->instagram != $kelas->instagram) {
             $valrule['instagram'] = 'required|unique:kelas';
         }
+        $ValidatedData = $request->validate($valrule);
         if ($request->file('fotbar')) {
             if ($request->oldFotbar) {
                 Storage::delete($request->oldFotbar);
             }
-            $valrule['fotbar'] = $request->file('fotbar')->store('app-image');
+            $ValidatedData['fotbar'] = $request->file('fotbar')->store('app-image');
         }
-        $ValidatedData = $request->validate($valrule);
         $make = kelas::where('id', $kelas->id)->update($ValidatedData);
         if ($make) {
             return redirect(route('kelas.index'))->with('success', 'Data Kelas Berhasil Diupdate!');
         } else {
-            return redirect('/dashboard/kelas')->with('error', 'Gagal menambahkan data kelas');
+            return redirect('/dashboard/kelas')->with('toast_error', 'Gagal menambahkan data kelas');
         }
     }
 

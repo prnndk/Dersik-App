@@ -12,13 +12,12 @@ use App\Models\kelas;
 use App\Models\Regency;
 use App\Models\siswa;
 use App\Models\status;
-use App\Models\User;
-use App\Notifications\NotifyBot;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class SiswaController extends Controller
 {
@@ -27,7 +26,7 @@ class SiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         return view('services.pendataan.index', [
             'datum' => siswa::where('user_id', auth()->user()->id)->get(),
@@ -106,14 +105,21 @@ class SiswaController extends Controller
         $validated['ip'] = $request->ip();
         $validated['review'] = 0;
         $validated['message'] = 'Belum ada pesan';
-        $store = Siswa::create($validated);
-        Mail::to($store->email)->queue(new PendataanMail($store));
-        Notification::send(User::first(), new NotifyBot('Pengisian pendataan baru via dashboard dengan nama '.auth()->user()->name));
-        if ($store) {
-            return redirect(route('pendataan.index'))->with('success', 'Terimakasih Telah Mengisi Pendataan, salinan pendataan telah dikirim ke email anda');
-        } else {
-            return redirect(route('pendataan.index'))->with('toast_error', 'Terjadi Kesalahan Ulangi Pengisian Form Anda');
+        DB::beginTransaction();
+        try {
+            $success_data = Siswa::create($validated);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            $this->notifyBot('Terjadi kegagalan percobaan input pendataan \n Error Message: '.$th->getMessage);
+
+            return redirect(route('pendataan.index'))->with('toast_error', 'Terjadi Kesalahan ketika mengisi form');
         }
+        DB::commit();
+        Mail::to($success_data->email)->queue(new PendataanMail($success_data));
+        $this->notifyBot('Pengisian pendataan baru via dashboard dengan nama '.$success_data->nama);
+
+        return redirect(route('pendataan.index'))->with('success', 'Terimakasih Telah Mengisi Pendataan, salinan pendataan telah dikirim ke email anda');
     }
 
     public function storeAPI(StoresiswaRequest $request)
@@ -138,20 +144,21 @@ class SiswaController extends Controller
         $validated['ip'] = $request->ip();
         $validated['review'] = 0;
         $validated['message'] = 'Belum ada pesan';
-        $store = Siswa::create($validated);
-        Mail::to($store->email)->queue(new PendataanMail($store));
-        Notification::send(User::first(), new NotifyBot('Pengisian pendataan baru via publik dengan nama '.$store->nama));
-        if ($store) {
-            return response()->json('success', 200);
-        } else {
-            return response()->json('error', 500);
+        DB::beginTransaction();
+        try {
+            $success_data = Siswa::create($validated);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $this->errorResponse($th->getMessage, 500);
         }
+        DB::commit();
+        Mail::to($success_data->email)->queue(new PendataanMail($success_data));
+        $this->notifyBot('Pengisian pendataan baru via publik API dengan nama '.$success_data->nama);
+        $this->successResponseWithData($success_data);
     }
 
     /**
      * Display the specified resource.
-     *
-     * @param \App\Models\siswa $siswa
      *
      * @return \Illuminate\Http\Response
      */
@@ -173,8 +180,6 @@ class SiswaController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param \App\Models\siswa $siswa
      *
      * @return \Illuminate\Http\Response
      */
@@ -198,8 +203,6 @@ class SiswaController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Models\siswa $siswa
-     *
      * @return \Illuminate\Http\Response
      */
     public function update(UpdatesiswaRequest $request, $id)
@@ -222,19 +225,23 @@ class SiswaController extends Controller
             'message' => Rule::requiredIf($request->review == 2),
         ]);
         $validUpdate['pengajuan'] = 1;
-        $upload = siswa::where('id', $siswa->id)->update($validUpdate);
-        Mail::to($siswa->email)->queue(new ReviewPendataanMail($siswa));
-        if ($upload) {
-            return redirect(route('pendataan.index'))->with('success', 'Data Berhasil Diupdate');
-        } else {
+        DB::beginTransaction();
+        try {
+            $siswa->update($validUpdate);
+        } catch (\Exception $e) {
+            DB::rollback();
+
             return redirect(route('pendataan.index'))->with('toast_error', 'Terjadi kesalahan saat update data');
         }
+        DB::commit();
+
+        Mail::to($siswa->email)->queue(new ReviewPendataanMail($siswa));
+
+        return redirect(route('pendataan.index'))->with('success', 'Data Berhasil Diupdate');
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param \App\Models\siswa $siswa
      *
      * @return \Illuminate\Http\Response
      */

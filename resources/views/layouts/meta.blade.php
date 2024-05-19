@@ -11,7 +11,7 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="Website Alumni SMASA Blitar">
     <meta property="og:description" content="Sebuah website untuk wadah informasi kealumnian SMAN 1 Blitar dan berbagai keperluan terkait, dijalankan oleh Alumni 2022 SMASA DERSIK">
-    <meta property="og:image" content="https://dersik.smasa.id/og-image.jpg">
+    <meta property="og:image" content="{{ url("/og-image.jpg") }}">
 
     {{-- Twitter Meta Tags --}}
     <meta name="twitter:card" content="summary_large_image">
@@ -19,7 +19,7 @@
     <meta property="twitter:url" content="https://dersik.smasa.id">
     <meta name="twitter:title" content="Website Alumni SMASA Blitar">
     <meta name="twitter:description" content="Sebuah website untuk wadah informasi kealumnian SMAN 1 Blitar dan berbagai keperluan terkait, dijalankan oleh Alumni 2022 SMASA DERSIK">
-    <meta name="twitter:image" content="https://dersik.smasa.id/og-image.jpg">
+    <meta name="twitter:image" content="{{ url("/og-image.jpg") }}">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">

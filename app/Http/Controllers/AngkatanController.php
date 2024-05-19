@@ -120,11 +120,11 @@ class AngkatanController extends Controller
             if ($request->oldLogo) {
                 Storage::delete($request->oldLogo);
             }
+            $path = Storage::putFileAs('app-image', $request->file('logo'), Str::kebab($request->nama));
         }
-        $path = Storage::putFileAs('app-image', $request->file('logo'), Str::kebab($request->nama));
         $validated = $request->validate($validUpdate);
         $validated['logo'] = $path;
-        Angkatan::where('id', $angkatan->id)->update($validated);
+        $angkatan->update($validated);
 
         return redirect(route('angkatan.index'))->with('success', 'Data Berhasil Di update');
     }

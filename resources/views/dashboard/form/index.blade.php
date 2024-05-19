@@ -12,7 +12,7 @@
   <div class="card-header">
     <h4>List Form Prom</h4>
     <div class="card-header-action">
-      <a href="create" class="btn btn-primary"><i class="fas fa-plus"></i> Create New Form</a>
+      <a href="{{ route('formprom.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Create New Form</a>
     </div>
   </div>
   <div class="card-body">

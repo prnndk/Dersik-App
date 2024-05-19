@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.main')
-@section('webtitle','Data User App')
+@section('webtitle','Data User')
 @section('container')
     <div class="section-header"><h3>Registered User</h3>
     <div class="section-header-breadcrumb">
@@ -9,7 +9,7 @@
     <div class="card">
         <div class="card-body">
             @if (session()->has('error'))
-                
+
             @endif
             <div class="card-header"><h4>Table List of User</h4>
                 <div class="card-header-action">
@@ -87,27 +87,27 @@
 @section('customjs')
 <script>
     @if (session()->has('error'))
-    $('#modal').modal('show');                   
+    $('#modal').modal('show');
     @endif
-    $('#import').click(function (e) { 
+    $('#import').click(function (e) {
         e.preventDefault();
         $('#modal').modal('show')
     });
     $('#modalSubmit').attr('disabled',true);
-    $('#file').change(function (e) { 
+    $('#file').change(function (e) {
         e.preventDefault();
         var fileName = e.target.files[0].name;
         $('.custom-file-label').html(fileName);
         $('#modalSubmit').attr('disabled',false);
     });
-    $('#modalSubmit').click(function (e) { 
+    $('#modalSubmit').click(function (e) {
         e.preventDefault();
         $('#modalSubmit').addClass('btn-progress');
         $('#modalSubmit').attr('disabled',true);
         $('#formSubmit').submit()
     });
     //delete function
-    $('.delete').click(function (e) { 
+    $('.delete').click(function (e) {
         e.preventDefault();
         var id = $(this).data('id');
         Swal.fire({

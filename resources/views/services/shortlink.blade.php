@@ -17,10 +17,10 @@
                         </div>
                         <div class="card-body">
                             <ul id="error"></ul>
-                            <div class="form-group col-md-8">
-                                <label for="name">Nama Link</label>
-                                <input type="text" class="form-control" id="name" name="name"  required value="{{ old('name') }}">
-                            </div>
+{{--                            <div class="form-group col-md-8">--}}
+{{--                                <label for="name">Nama Link</label>--}}
+{{--                                <input type="text" class="form-control" id="name" name="name"  required value="{{ old('name') }}">--}}
+{{--                            </div>--}}
                             <div class="form-group col-md-8">
                                 <label for="link">Long Link</label>
                                 <input type="url" class="form-control" id="link" name="link"  required value="{{ old('link') }}">
@@ -41,7 +41,18 @@
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-header">
-
+                            <h4>List shortenedlink</h4>
+                        </div>
+                        <div class="card-body">
+                            @foreach($links as $link)
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <a href="{{ 'to/'.$link->shortened }}" target="_blank">{{ '/to/'.$link->shortened }}</a>
+                                </div>
+                                <div class="col-md-4">
+                                    <span class="badge {{$link->active ? 'badge-success' : 'badge-danger'}}">{{$link->active ? 'Active' : 'Non-Active'}}</span>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -59,9 +70,9 @@
             $('#shortlink').removeClass('is-valid is-invalid');
             $.ajax({
                 type:"POST",
-                url: "https://smasa.id/api/cekLink",
+                url: "/api/cekLink",
                 data:{
-                    shortlink: short,
+                    shortened: short,
                 },
                 dataType: "JSON",
                 success: function (response) {
@@ -74,17 +85,16 @@
                 }
             })
         });
-        $('#submit').click(function (e) { 
+        $('#submit').click(function (e) {
             e.preventDefault();
             $('#submit').addClass('btn-progress');
             $.ajax({
                 type: "POST",
-                url: "https://smasa.id/api/links",
+                url: "api/links",
                 data: {
-                    token:'357203',
-                    name: $('#name').val(),
-                    link: $('#link').val(),
-                    shortlink: $('#shortlink').val(),
+                    original: $('#link').val(),
+                    shortened: $('#shortlink').val(),
+                    oleh: {{ Auth::user()->id }},
                 },
                 dataType: "JSON",
                 success: function (response) {
@@ -93,7 +103,7 @@
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil',
-                        text: 'Link berhasil dibuat',
+                        text: response.message,
                     });
                     $('#name').val('');
                     $('#link').val('');

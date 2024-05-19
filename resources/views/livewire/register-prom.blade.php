@@ -1,9 +1,9 @@
 <div>
     {{-- In work, do what you enjoy. --}}
-        <form wire:submit.prevent="create">
+        <form wire:submit="create">
             <div class="form-group">
                 <label for="name">Nama Lengkap</label>
-                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"  required value="{{ old('name') }}" wire:model="name">
+                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"  required value="{{ old('name') }}" wire:model.live="name">
                 @error('name')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -12,7 +12,7 @@
             </div>
             <div class="form-group">
                 <label for="email">Active Mail</label>
-                <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email"  required value="{{ old('email') }}" wire:model="email">
+                <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email"  required value="{{ old('email') }}" wire:model.live="email">
                 @error('email')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -21,7 +21,7 @@
             </div>
             <div class="form-group">
                 <label for='kelas'>Kelas</label>
-                <select class="form-control selectric" name='kelas_id' wire:model="class">
+                <select class="form-control selectric" name='kelas_id' wire:model.live="class">
                     @foreach ($kelas as $list)
                         @if (old('kelas_id')==$list->id)
                             <option value="{{ $list->id }}" selected>{{ $list->kelas }}</option>
@@ -33,7 +33,7 @@
             </div>
             <div class="form-group">
                 <label for="phone">Nomor Hp Aktif</label>
-                <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" required value="{{old('phone') }}" wire:model="phone">
+                <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" required value="{{old('phone') }}" wire:model.live="phone">
                 @error('phone')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -43,11 +43,11 @@
             <div class="form-group">
                 <label for="is_join" class="d-block">Kesediaan Ikut Prom</label>
                 <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" id="is_join_true" name="is_join_true" class="custom-control-input" wire:model="is_join" value="1" {{old('is_join'==1? 'checked':'')}}>
+                    <input type="radio" id="is_join_true" name="is_join_true" class="custom-control-input" wire:model.live="is_join" value="1" {{old('is_join'==1? 'checked':'')}}>
                     <label class="custom-control-label" for="is_join_true">Mengikuti Prom</label>
                 </div>
                 <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" id="is_join_false" name="is_join_false" class="custom-control-input" wire:model="is_join" value="0" {{old('is_join'==0? 'checked':'')}}>
+                    <input type="radio" id="is_join_false" name="is_join_false" class="custom-control-input" wire:model.live="is_join" value="0" {{old('is_join'==0? 'checked':'')}}>
                     <label class="custom-control-label" for="is_join_false">Tidak Mengikuti Prom</label>
                 </div>
                 @error('is_join')

@@ -18,11 +18,11 @@
                     <h4>Make New Blast Mail</h4>
                 </div>
                 <div class="card-body">
-                    <form wire:submit.prevent="save">
+                    <form wire:submit="save">
                         {{-- title area --}}
                         <div class="form-group">
                             <label for="title">Title</label>
-                            <input type="text" wire:model="title" class="form-control @error('title') is-invalid @enderror" id="title" placeholder="Title">
+                            <input type="text" wire:model.live="title" class="form-control @error('title') is-invalid @enderror" id="title" placeholder="Title">
                             @error('title')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -31,7 +31,7 @@
                         </div>
                         <div class="form-group">
                             <label for="subject">Subject</label>
-                            <input type="text" wire:model="subject" class="form-control @error('subject') is-invalid @enderror" id="subject" placeholder="Subject of email">
+                            <input type="text" wire:model.live="subject" class="form-control @error('subject') is-invalid @enderror" id="subject" placeholder="Subject of email">
                             @error('subject')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -41,7 +41,7 @@
                         {{-- markdown area  --}}
                         <div class="form-group">
                             <label for="message">Message</label>
-                            <input type="hidden" id="message" wire:model="message">
+                            <input type="hidden" id="message" wire:model.live="message">
                             <div id="editor" wire:ignore></div>
                             @error('message')
                                 <div class="invalid-feedback">
@@ -66,7 +66,7 @@
                         <div class="form-group">
                             {{-- file upload attachment --}}
                             <label for="attachment">Attachment</label>
-                            <input type="file" wire:model="attachment" class="form-control @error('attachment') is-invalid @enderror" id="attachment">
+                            <input type="file" wire:model.live="attachment" class="form-control @error('attachment') is-invalid @enderror" id="attachment">
                             @error('attachment')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -75,7 +75,7 @@
                         </div>
                         <div class="form-group">
                             <label for="sender">Customize Sender Name (Default is postmaster@smasa.id)</label>
-                            <input type="text" wire:model="sender" class="form-control @error('sender') is-invalid @enderror" id="sender" placeholder="Sender Name">
+                            <input type="text" wire:model.live="sender" class="form-control @error('sender') is-invalid @enderror" id="sender" placeholder="Sender Name">
                             @error('sender')
                                 <div class="invalid-feedback">
                                     {{ $message }}

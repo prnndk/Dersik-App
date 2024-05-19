@@ -8,11 +8,9 @@ use App\Models\Angkatan;
 use App\Models\kelas;
 use App\Models\Regency;
 use App\Models\User;
-use App\Notifications\NotifyBot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -110,32 +108,40 @@ class dashboardUserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user, $id)
+    public function update(Request $request, User $user)
     {
-        $data = User::FindorFail($id);
-        $upval = $request->validate([
+        $rules = [
             'kelas_id' => 'required',
             'tempatlahir' => 'required',
             'dob' => 'required|date',
             'role' => 'required',
             'password' => 'required|min:8',
-        ]);
-        if ($request->email != $data->email) {
-            $upval['email'] = 'required|unique:users|email:dns';
+        ];
+        if ($request->email != $user->email) {
+            $rules['email'] = 'required|unique:users|email:dns';
         }
-        if ($request->username != $data->username) {
-            $upval['username'] = 'required|unique:users|min:4';
+        if ($request->username != $user->username) {
+            $rules['username'] = 'required|unique:users|min:4';
         }
-        if ($request->name != $data->name) {
-            $upval['name'] = 'required|unique:users|min:5';
+        if ($request->name != $user->name) {
+            $rules['name'] = 'required|unique:users|min:5';
         }
-        $upval['password'] = Hash::make($upval['password']);
-        $update = User::where('id', $data->id)->update($upval);
-        if ($update) {
-            return redirect(route('userlist.index'))->with('success', 'Data User Berhasil Di update');
-        } else {
-            return redirect(route('userlist.index'))->with('error', 'Data Gagal Update');
+        $validated = $request->validate($rules);
+        if ($request->password) {
+            $validated['password'] = Hash::make($validated['password']);
         }
+        DB::beginTransaction();
+        try {
+            $user->update($validated);
+        } catch (\Exception $e) {
+            DB::rollback();
+            $this->notifyBot('Error saat update user. '.$e->getMessage());
+
+            return redirect(route('userlist.index'))->with('toast_error', 'Terjadi Kesalahan data gagal diupdate.');
+        }
+        DB::commit();
+
+        return redirect(route('userlist.index'))->with('success', 'Data User Berhasil Di update');
     }
 
     /**
@@ -145,7 +151,7 @@ class dashboardUserController extends Controller
      */
     public function destroy(User $user)
     {
-        Notification::send(auth()->user(), new NotifyBot('User dengan nama '.$user->name.' telah dihapus oleh '.auth()->user()->name));
+        $this->notifyBot('User dengan nama '.$user->name.' telah dihapus oleh '.auth()->user()->name);
 
         $user->delete();
 

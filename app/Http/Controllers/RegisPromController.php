@@ -16,7 +16,7 @@ class RegisPromController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function index()
     {
@@ -34,7 +34,7 @@ class RegisPromController extends Controller
     public function create()
     {
         $data = RegisProm::where('user_id', auth()->user()->id)->first();
-        if (!$data) {
+        if (!$data || auth()->user()->role == 'admin') {
             return view('dashboard.form.create', [
                 'kelas' => kelas::all(),
             ]);
@@ -63,7 +63,7 @@ class RegisPromController extends Controller
             return redirect(route('formprom.create'))->with('toast_error', 'Terjadi Kesalahan Saat Insert Data!');
         }
         DB::commit();
-        $this->notifyBot('Registrasi baru telah dibuat oleh user '.auth()->user()->name);
+        $this->notifyBot('Registrasi Prom baru telah dibuat oleh user '.auth()->user()->name);
 
         return redirect(route('formprom.index'))->with('success', 'Berhasil Melakukan Registrasi');
     }
@@ -75,13 +75,10 @@ class RegisPromController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(RegisProm $regis_prom)
     {
-        $data = RegisProm::where('id', $id)->first();
-        dd($data);
-
         return view('dashboard.form.show', [
-            'detail' => $data,
+            'detail' => $regis_prom,
         ]);
     }
 
@@ -115,7 +112,15 @@ class RegisPromController extends Controller
         ];
         $validatedData = $request->validate($rules);
         $validatedData['user_id'] = auth()->user()->id;
-        RegisProm::where('id', $regisProm->id)->update($validatedData);
+        DB::beginTransaction();
+        try {
+            $regisProm->update($validatedData);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->notifyBot($e->getMessage());
+            throw $e;
+        }
+        DB::commit();
 
         return redirect('/dashboard/form')->with('success', 'Data Has Been Updated!');
     }
@@ -127,10 +132,9 @@ class RegisPromController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(RegisProm $regis_prom)
     {
-        $regisProm = RegisProm::where('id', $id)->first();
-        $regisProm->delete();
+        $regis_prom->delete();
 
         return redirect('/dashboard/formprom')->with('success', 'Data has been deleted');
     }

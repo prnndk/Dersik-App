@@ -39,7 +39,7 @@ class JetstreamServiceProvider extends ServiceProvider
             if ($user && Hash::check($request->password, $user->password)) {
                 return $user;
             }
-            Notification::send(User::first(), new NotifyBot('Upaya login gagal dengan username *'.$request->auth.'*'));
+            Notification::send(User::first(), new NotifyBot('Upaya login gagal dengan username *'.$request->auth.'*'."\n".'IP Address = '.$request->ip()));
         });
     }
 

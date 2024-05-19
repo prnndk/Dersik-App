@@ -5,17 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\agenda;
 use App\Http\Requests\StoreagendaRequest;
 use App\Http\Requests\UpdateagendaRequest;
+use Illuminate\View\View;
 
 class AgendaController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function index()
+    public function index() : View
     {
-        return view('services.agenda.index');
+        return view('services.agenda.index',[
+        'agendas' => agenda::all(),
+        ]);
     }
 
     /**

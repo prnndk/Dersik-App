@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\agenda;
 use App\Models\dashlink;
 use App\Models\Informasi;
 use App\Models\korwil;
 use App\Models\pemilih;
 use App\Models\siswa;
+use App\Models\User;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -48,6 +50,8 @@ class DashboardController extends Controller
             $icon = 'bi-moon-stars';
             $text = 'white';
         }
+        $agenda = agenda::where('tanggal',">",Carbon::now()->format('Y-m-d'))->get();
+
 
         return view('dashboard', [
             'info' => Informasi::latest()->first(),
@@ -58,11 +62,14 @@ class DashboardController extends Controller
             'icon' => $icon,
             'text' => $text,
             'button' => dashlink::where('active', true)->where('location','1')->get(),
+            'birthdays'=> $this->todayBirthday(),
+            'agendas' => $agenda,
         ]);
     }
 
-    public function shortlink()
-    {
-        return view('services.shortlink');
+    public function todayBirthday(){
+        $date = Carbon::now();
+        $birthday = User::whereMonth('dob', $date->month)->whereDay('dob', $date->day)->get();
+        return $birthday;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use App\Models\kelas;
 use App\Models\RegisProm;
@@ -18,7 +18,7 @@ class RegisterProm extends Component
     public function create()
     {
         $this->validate([
-            'name' => 'required|min:4|unique:regis_proms,name|regex:/^[a-zA-Z\s]*$/',
+            'name' => 'required|min:4|unique:regis_proms,nama|regex:/^[a-zA-Z\s]*$/',
             'email' => 'required|email:dns|unique:regis_proms,email',
             'phone' => 'required|min:10',
             'is_join' => 'required|boolean',
@@ -32,7 +32,7 @@ class RegisterProm extends Component
             'class' => $this->class,
         ];
         $this->resetInput();
-        $this->emit('registerPromStore', $data);
+        $this->dispatch('registerPromStore', $data);
     }
 
     public function registerPromStore($data)

@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreShortlinkRequest;
 use App\Http\Requests\UpdateShortlinkRequest;
 use App\Models\Shortlink;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class ShortlinkController extends Controller
 {
@@ -22,8 +26,11 @@ class ShortlinkController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
+        return view('services.shortlink',[
+            'links' => Shortlink::all(),
+        ]);
     }
 
     /**
@@ -31,8 +38,29 @@ class ShortlinkController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreShortlinkRequest $request)
+    public function store(StoreShortlinkRequest $request) : JsonResponse
     {
+        $validatedRequest = $request->validate([
+            'original' => 'required|url',
+            'shortened' => 'required|string|unique:shortlinks,shortened',
+            'oleh'=>'required|exists:users,id',
+        ]);
+        $validatedRequest['active'] = true;
+        DB::beginTransaction();
+        try {
+            Shortlink::create($validatedRequest);
+        }catch (\Exception $e){
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal membuat shortlink',
+            ],500);
+        }
+        DB::commit();
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil membuat shortlink',
+        ]);
     }
 
     /**
@@ -74,5 +102,23 @@ class ShortlinkController extends Controller
      */
     public function destroy(Shortlink $shortlink)
     {
+    }
+    public function cekLink(Request $request){
+        $shortened = $request->shortened;
+        $request->validate([
+                'shortened' => 'required|string',
+            ]);
+        $shortlink = Shortlink::whereRaw('BINARY shortened =?', [$shortened])->first();
+        if ($shortlink) {
+            return response()->json([
+                'success' => false,
+                'message' => 'String tersebut sudah terdaftar',
+            ],500);
+        } else {
+            return response()->json([
+                'success' => true,
+                'message' => 'String tersebut belum terdaftar',
+            ]);
+        }
     }
 }

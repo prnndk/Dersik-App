@@ -89,7 +89,7 @@ class DashlinkController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function update(UpdatedashlinkRequest $request)
     {

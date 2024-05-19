@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\KelasController;
+use App\Http\Controllers\SiswaController;
 use App\Models\siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,4 +30,6 @@ Route::get('pendataan', function () {
     );
 });
 
-Route::get('kelasByAngkatan',[KelasController::class,'getByAngkatan'])->name('kelasByAngkatan');
+Route::get('kelasByAngkatan', [KelasController::class, 'getByAngkatan'])->name('kelasByAngkatan');
+Route::post('cekLink', [\App\Http\Controllers\ShortlinkController::class, 'cekLink'])->name('cekLink');
+Route::post('links',[\App\Http\Controllers\ShortlinkController::class,'store']);

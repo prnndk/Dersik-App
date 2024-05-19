@@ -21,7 +21,7 @@
           <div class=" text-center p-10">
             <h1 class="text-5xl font-bold mb-4 py-2 text-slate-100">Sorry we're under maintenance</h1>
             <h5 class="text-lg py-5 leading-6 text-slate-100">
-              Currently undergoing maintenance. Please connect with us later!
+              Currently, undergoing maintenance. Please connect with us later!
             </h5>
           </div>
             <div class="flex justify-center">

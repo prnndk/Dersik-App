@@ -9,8 +9,9 @@
     </div>
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('userlist.update',$user->id) }}" role="form"  method="post">
+            <form action="{{ route('userlist.update',$user->uuid) }}" role="form"  method="post">
                 @csrf
+                @method('PUT')
                 <div class="row">
                 {{-- name --}}
                 <div class="form-group col-md-5">
@@ -103,7 +104,7 @@
                 </div>
                 {{-- end row --}}
                 </div>
-                <button type="submit" class="btn btn-primary">Submit new user</button>
+                <button type="submit" class="btn btn-primary">Edit this user</button>
                 <a href="{{ route('userlist.index') }}" class="btn btn-info">Back To List</a>
             </form>
         </div>

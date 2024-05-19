@@ -3,7 +3,7 @@
 {{-- Put Content Here --}}
 <div class="section-header">
     <div class="section-header-back">
-        <a href="{{ route('dashboard') }}" class="btn btn-icon"><i class="fas fa-arrow-left"></i></a>
+        <a href="{{ route('formprom.index') }}" class="btn btn-icon"><i class="fas fa-arrow-left"></i></a>
     </div>
     <h2>Promnight Registration</h2>
 </div>

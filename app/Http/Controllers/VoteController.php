@@ -7,6 +7,7 @@ use App\Http\Requests\UpdatevoteRequest;
 use App\Models\Angkatan;
 use App\Models\pemilih;
 use App\Models\vote;
+use Illuminate\Support\Facades\DB;
 
 class VoteController extends Controller
 {
@@ -50,7 +51,7 @@ class VoteController extends Controller
         ]);
         $setor = vote::create($validated);
         if ($setor) {
-            $this->notifyBot('Pemilihan baru telah dibuat! dengan nama '.$setor->nama.' oleh '.auth()->user()->name);
+            $this->notifyBot('Pemilihan baru telah berhasil dibuat!'."\n".'Nama Pemilihan '.$setor->nama.' oleh '.auth()->user()->name);
 
             return redirect(route('voting.index'))->with('success', 'Berhasil membuat pemilihan dengan nama '.$validated['nama']);
         } else {
@@ -88,17 +89,25 @@ class VoteController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Models\vote $vote
-     *
      * @return \Illuminate\Http\Response
      */
     public function destroy(vote $voting)
     {
+        DB::beginTransaction();
+        try {
         $voters = pemilih::where('vote_id', $voting->id)->get();
-        foreach ($voters as $vtr) {
-            pemilih::destroy($voters->id);
+        foreach ($voters as $voter) {
+            pemilih::destroy($voter->id);
         }
-        vote::destroy($voting->id);
+        $voting->delete();
+
+        }catch (\Exception $e){
+            DB::rollBack();
+            $this->notifyBot("Terjadi kegagalan saat melakukan hapus data Vote \n".$e->getMessage()."\n".$e->getLine()."\n".$e->getFile()."\n".$e->getCode());
+
+            return redirect(route('voting.index'))->with('toast_error', 'Terjadi Kesalahan');
+        }
+        DB::commit();
 
         return redirect(route('voting.index'))->with('success', 'Data '.$voting->nama.' Berhasil Dihapus');
     }

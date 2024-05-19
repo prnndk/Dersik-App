@@ -8,10 +8,8 @@ use App\Models\Angkatan;
 use App\Models\Informasi;
 use App\Models\kateginfo;
 use App\Models\Shortlink;
-use App\Models\User;
-use App\Notifications\NotifyBot;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class InformasiController extends Controller
@@ -56,19 +54,20 @@ class InformasiController extends Controller
            'judul' => 'required|min:5',
             'kategori_informasi' => 'required',
             'angkatan' => 'required',
-            'img' => 'required|file|image|mimes:png,jpg,svg',
+            'img' => 'required|file|image|mimes:png,jpg,svg|max:2048',
             'body' => 'required',
             'informasi_type' => 'required|numeric',
             'shortlink' => 'required|boolean',
             'shortened' => 'required_if:shortlink,true|string|alpha_dash|min:3',
         ]);
-        if ($request->file('img')) {
-            $validateData['img'] = $request->file('img')->store('app-image');
-        }
+
         $validateData['slug'] = Str::slug($validateData['judul']);
         $validateData['active'] = true;
 
         $validateData['oleh'] = auth()->user()->id;
+        if ($request->file('img')) {
+            $validateData['img'] = $request->file('img')->store('app-image');
+        }
         DB::beginTransaction();
         try {
             if ($validateData['shortlink']) {
@@ -81,12 +80,13 @@ class InformasiController extends Controller
             }
             Informasi::create($validateData);
         } catch (\Throwable $th) {
+            Storage::delete($validateData['img']);
             DB::rollBack();
             throw $th;
         }
         DB::commit();
-        Notification::send(User::first(), new NotifyBot('Informasi baru telah dibuat oleh '.auth()->user()->name));
-        
+        $this->notifyBot('Informasi baru telah dibuat oleh '.auth()->user()->name);
+
         return redirect(route('informasi.index'))->with('success', 'Berhasil Menambahkan Informasi Baru');
     }
 

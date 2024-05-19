@@ -51,7 +51,7 @@ Route::middleware([
         Route::get('/info/kategori', 'create')->name('makeKateginfo')->middleware('admin');
         Route::put('/info/kategori/{kateginfos:id}', 'edit')->name('kategInfo.edit')->middleware('admin');
         Route::post('/info/kategstore', 'store')->name('kategInfoStore')->middleware('admin');
-        Route::delete('/info/kateg/delete/{kateinfos:id}', 'destroy')->name('kateg.destroy')->middleware('admin');
+        Route::delete('/info/kateg/delete/{kateginfos:id}', 'destroy')->name('kateg.destroy')->middleware('admin');
     });
     Route::resource('/userlist', dashboardUserController::class)->middleware('admin')->parameters(['userlist' => 'user']);
     Route::resource('/pemilih', PemilihController::class)->middleware('admin');
@@ -98,7 +98,8 @@ Route::middleware([
     // });
     Route::resource('/dashboard/links', DashlinkController::class)->middleware('admin')->except(['create', 'show']);
     Route::get('api/link', [DashlinkController::class, 'apiLink'])->name('apiLink')->middleware('admin');
-    Route::get('shortlink', [DashboardController::class, 'shortlink'])->name('shortlink');
+    Route::get('shortlink', [ShortlinkController::class,'create'])->name('shortlink');
+
     Route::get('cache_clear', function () {
         Artisan::call('cache:clear');
 
